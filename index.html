@@ -163,23 +163,13 @@ body{font-family:'Hind',sans-serif;background:var(--light);color:var(--text);}
 .retry-btn{padding:12px 24px;background:linear-gradient(135deg,var(--saffron),#FF9A3C);color:#fff;border:none;border-radius:14px;font-size:14px;font-weight:700;cursor:pointer;font-family:'Baloo 2',sans-serif;}
 .home-btn{padding:12px 24px;background:var(--light);color:var(--blue);border:2px solid var(--blue);border-radius:14px;font-size:14px;font-weight:700;cursor:pointer;font-family:'Baloo 2',sans-serif;}
 
-/* NOTE READER */
+/* NOTE READER (PDF EMBED) */
 #noteReader{display:none;position:fixed;inset:0;background:#fff;z-index:200;overflow-y:auto;}
 .reader-nav{background:var(--deep);color:#fff;padding:14px 18px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:10;}
 .back-btn{background:rgba(255,255,255,0.1);border:none;color:#fff;padding:7px 12px;border-radius:10px;cursor:pointer;font-size:13px;}
 .reader-title{font-family:'Baloo 2',sans-serif;font-size:16px;font-weight:700;}
-.reader-body{padding:20px;max-width:700px;margin:0 auto;}
-.reader-body h2{font-family:'Baloo 2',sans-serif;font-size:20px;color:var(--deep);margin-bottom:6px;}
-.reader-body .intro{color:var(--muted);font-size:14px;margin-bottom:20px;line-height:1.7;}
-.note-sec{margin-bottom:24px;}
-.note-sec h3{font-family:'Baloo 2',sans-serif;font-size:16px;color:var(--blue);margin-bottom:10px;padding-bottom:6px;border-bottom:2px solid var(--light);}
-.note-sec p,.note-sec li{font-size:14px;line-height:1.8;color:var(--text);margin-bottom:6px;}
-.note-sec ul{padding-left:18px;}
-.hl-box{background:#FFF7F0;border-left:4px solid var(--saffron);padding:12px 14px;border-radius:0 10px 10px 0;margin:12px 0;}
-.formula-box{background:#EEF2FF;border-radius:12px;padding:14px;margin:12px 0;text-align:center;}
-.formula{font-size:17px;font-weight:700;color:var(--blue);font-family:monospace;}
-.tip-box{background:#D1FAE5;border-radius:10px;padding:12px;margin-top:14px;}
-.tip-box p{color:#065F46;font-weight:500;font-size:13px;}
+.reader-body{padding:0;max-width:100%;height:calc(100vh - 50px);margin:0;}
+#pdfViewer{width:100%;height:100%;border:none;}
 
 /* ADMIN */
 .admin-card{background:#fff;border-radius:16px;padding:18px;box-shadow:0 2px 12px rgba(0,0,0,0.07);margin-bottom:14px;}
@@ -207,14 +197,12 @@ body{font-family:'Hind',sans-serif;background:var(--light);color:var(--text);}
 </head>
 <body>
 
-<!-- LOADING -->
 <div id="loadingScreen" class="screen active">
   <div class="loader-logo">Notes<span>Verse</span></div>
   <div class="loader-bar"><div class="loader-fill"></div></div>
   <p style="color:rgba(255,255,255,0.5);font-size:13px;margin-top:8px;">Loading...</p>
 </div>
 
-<!-- LOGIN -->
 <div id="loginScreen" class="screen">
   <div class="bg-circle bc1"></div>
   <div class="bg-circle bc2"></div>
@@ -229,7 +217,6 @@ body{font-family:'Hind',sans-serif;background:var(--light);color:var(--text);}
       <button class="tab-btn" onclick="switchTab('register')">Register</button>
     </div>
 
-    <!-- LOGIN FORM -->
     <div id="loginForm">
       <div class="form-group">
         <label>📧 Email</label>
@@ -243,7 +230,6 @@ body{font-family:'Hind',sans-serif;background:var(--light);color:var(--text);}
       <div class="error-msg" id="loginError"></div>
     </div>
 
-    <!-- REGISTER FORM -->
     <div id="registerForm" style="display:none">
       <div class="form-group">
         <label>👤 Full Name</label>
@@ -274,7 +260,6 @@ body{font-family:'Hind',sans-serif;background:var(--light);color:var(--text);}
   </div>
 </div>
 
-<!-- MAIN APP -->
 <div id="appScreen" class="screen">
   <nav class="navbar">
     <div class="nav-logo">Notes<span>Verse</span></div>
@@ -284,7 +269,6 @@ body{font-family:'Hind',sans-serif;background:var(--light);color:var(--text);}
     </div>
   </nav>
 
-  <!-- DASHBOARD -->
   <div id="dashPage" class="page active">
     <div class="welcome-banner">
       <h2>Namaste, <span id="welcomeName">Student</span>! 🙏</h2>
@@ -304,12 +288,8 @@ body{font-family:'Hind',sans-serif;background:var(--light);color:var(--text);}
       <div class="quick-card" onclick="goTo('historyPage')"><div class="qc-icon">📊</div><h3>My Progress</h3><p>Score history</p></div>
       <div class="quick-card" id="adminQuickCard" style="display:none" onclick="goTo('adminPage')"><div class="qc-icon">👑</div><h3>Admin Panel</h3><p>Manage content</p></div>
     </div>
-    <div class="hl-box" style="border-radius:12px;margin-top:4px;">
-      <p>💡 <strong>Aaj ka GK:</strong> Bharat ka pehla satellite "Aryabhata" 19 April 1975 ko launch hua tha Soviet Union ki madad se.</p>
-    </div>
   </div>
 
-  <!-- NOTES PAGE -->
   <div id="notesPage" class="page">
     <p class="sec-title">📖 Study Notes</p>
     <div class="cat-tabs">
@@ -322,7 +302,6 @@ body{font-family:'Hind',sans-serif;background:var(--light);color:var(--text);}
     <div class="notes-grid" id="notesGrid"></div>
   </div>
 
-  <!-- QUIZ PAGE -->
   <div id="quizPage" class="page">
     <p class="sec-title">📝 Practice Tests</p>
     <div class="cat-tabs">
@@ -334,46 +313,40 @@ body{font-family:'Hind',sans-serif;background:var(--light);color:var(--text);}
     <div id="quizList"></div>
   </div>
 
-  <!-- HISTORY PAGE -->
   <div id="historyPage" class="page">
     <p class="sec-title">📊 Meri Progress</p>
     <div id="historyList"></div>
   </div>
 
-  <!-- ADMIN PAGE -->
   <div id="adminPage" class="page">
     <p class="sec-title">👑 Admin Panel <span class="admin-badge">ADMIN</span></p>
 
-    <!-- Stats -->
     <div class="stats-grid" style="margin-bottom:16px;">
       <div class="stat-card"><div class="stat-icon">👥</div><div class="stat-val" id="adminStudents">0</div><div class="stat-lbl">Total Students</div></div>
       <div class="stat-card"><div class="stat-icon">📝</div><div class="stat-val" id="adminQuizzes">0</div><div class="stat-lbl">Total Quizzes</div></div>
     </div>
 
-    <!-- Add Note -->
     <div class="admin-card">
-      <h3>➕ Naya Note Add Karo</h3>
+      <h3>➕ Naya PDF Note Add Karo</h3>
       <div class="add-content-form">
-        <input type="text" id="noteTitle" placeholder="Note ka title">
+        <input type="text" id="noteTitle" placeholder="Note ka title (Jaise: 1857 Revolt)">
         <select id="noteCategory">
           <option value="math">Math</option>
           <option value="gk">GK / History</option>
           <option value="reasoning">Reasoning</option>
           <option value="english">English</option>
-          <option value="railway">Railway GK</option>
-          <option value="hindi">Hindi</option>
         </select>
         <select id="noteExam">
           <option value="ssc">SSC</option>
           <option value="railway">Railway</option>
           <option value="both">Dono</option>
         </select>
-        <textarea id="noteContent" placeholder="Note ka content yahan likhein..."></textarea>
-        <button class="save-btn" onclick="addNote()">✅ Note Save Karo</button>
+        <p style="font-size:12px;color:var(--muted);margin-top:4px;">📌 Google Drive se shareable link copy karke yahan paste karein:</p>
+        <input type="url" id="notePdfUrl" placeholder="Paste Google Drive Link here...">
+        <button class="save-btn" onclick="addNote()">✅ PDF Note Save Karo</button>
       </div>
     </div>
 
-    <!-- Add Quiz -->
     <div class="admin-card">
       <h3>➕ Naya Quiz Add Karo</h3>
       <div class="add-content-form">
@@ -382,7 +355,6 @@ body{font-family:'Hind',sans-serif;background:var(--light);color:var(--text);}
           <option value="math">Math</option>
           <option value="gk">GK</option>
           <option value="reasoning">Reasoning</option>
-          <option value="english">English</option>
         </select>
         <select id="quizDiff">
           <option value="Easy">Easy</option>
@@ -395,7 +367,6 @@ body{font-family:'Hind',sans-serif;background:var(--light);color:var(--text);}
       </div>
     </div>
 
-    <!-- Students List -->
     <div class="admin-card">
       <h3>👥 Registered Students</h3>
       <div id="studentsList"><div class="empty"><div class="ei">👥</div><p>Loading...</p></div></div>
@@ -411,7 +382,6 @@ body{font-family:'Hind',sans-serif;background:var(--light);color:var(--text);}
   </div>
 </div>
 
-<!-- QUIZ ACTIVE -->
 <div id="quizActive">
   <div style="max-width:700px;margin:0 auto;">
     <div class="quiz-hdr">
@@ -429,16 +399,16 @@ body{font-family:'Hind',sans-serif;background:var(--light);color:var(--text);}
   </div>
 </div>
 
-<!-- NOTE READER -->
 <div id="noteReader">
   <div class="reader-nav">
     <button class="back-btn" onclick="closeReader()">← Wapas</button>
-    <div class="reader-title" id="readerTitle">Note</div>
+    <div class="reader-title" id="readerTitle">Note Viewer</div>
   </div>
-  <div class="reader-body" id="readerBody"></div>
+  <div class="reader-body" id="readerBody">
+     <iframe id="pdfViewer" src="" allowfullscreen></iframe>
+  </div>
 </div>
 
-<!-- FIREBASE -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-app.js";
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-auth.js";
@@ -457,47 +427,8 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-// ADMIN EMAIL — Yahan apna email daalo
+// ADMIN EMAIL 
 const ADMIN_EMAIL = "admin@notesverse.in";
-
-// Default Notes Data
-const defaultNotes = [
-  { title:"Profit & Loss — Complete Notes", category:"math", exam:"ssc", icon:"➗",
-    content:`<h2>Profit & Loss — Poori Jaankari</h2><p class="intro">SSC aur Railway exams mein Profit & Loss se 3-4 sawaal aate hain.</p><div class="note-sec"><h3>📌 Basic Formulas</h3><div class="formula-box"><div class="formula">Profit% = (Profit/CP) × 100</div></div><div class="formula-box"><div class="formula">SP = CP × (100 + P%) / 100</div></div></div><div class="note-sec"><h3>💡 Important Trick</h3><div class="hl-box"><p>🔑 Agar 20% Profit par 20% Loss ho → Overall Loss = 4%</p></div></div><div class="tip-box"><p>✅ SSC Tip: Dishonest dealer wale sawaalon mein weight fraud hota hai!</p></div>` },
-  { title:"Indian History — Key Points", category:"gk", exam:"ssc", icon:"🏛️",
-    content:`<h2>Indian History — Important Points</h2><p class="intro">SSC CGL aur Railway NTPC mein History se 4-5 sawaal aate hain.</p><div class="note-sec"><h3>🏹 Ancient India</h3><ul><li><strong>Maurya Dynasty:</strong> Chandragupta Maurya ne sthapana ki (322 BC)</li><li><strong>Ashoka:</strong> Kalinga Yudh 261 BC</li><li><strong>Gupta Period:</strong> "Golden Age of India"</li></ul></div><div class="note-sec"><h3>🇮🇳 Freedom Struggle</h3><ul><li>1857 — Pratham Swatantrata Sangram</li><li>1930 — Dandi March</li><li>1942 — Quit India Movement</li><li>15 August 1947 — Swatantrata</li></ul></div><div class="tip-box"><p>✅ Railway Tip: Governors-General list zaroor yaad karo!</p></div>` },
-  { title:"Railway — Important Facts", category:"gk", exam:"railway", icon:"🚂",
-    content:`<h2>Indian Railways — Important Facts</h2><p class="intro">Railway exams mein Railways ke facts pooche jaate hain.</p><div class="note-sec"><h3>🚂 Basic Facts</h3><ul><li>Sthapana: <strong>16 April 1853</strong></li><li>Total Zones: <strong>18</strong></li><li>Headquarter: <strong>New Delhi</strong></li></ul></div><div class="note-sec"><h3>🚦 Signals</h3><ul><li><strong>Green</strong> — Line clear</li><li><strong>Yellow</strong> — Caution</li><li><strong>Red</strong> — Stop</li></ul></div><div class="tip-box"><p>✅ Tip: Vande Bharat Express India ki sabse tez train hai!</p></div>` },
-  { title:"Reasoning — Coding Decoding", category:"reasoning", exam:"ssc", icon:"🧠",
-    content:`<h2>Coding-Decoding — Complete Guide</h2><p class="intro">SSC aur Railway mein Coding-Decoding se 2-3 sawaal pakke aate hain.</p><div class="note-sec"><h3>📌 Types</h3><ul><li><strong>Letter Coding:</strong> A=1, B=2...</li><li><strong>Number Coding:</strong> Words ko numbers mein</li><li><strong>Mixed Coding:</strong> Letter + Number</li></ul></div><div class="note-sec"><h3>💡 Trick</h3><div class="hl-box"><p>🔑 MANGO → NBOHI matlab har letter mein +1 add kiya</p></div></div><div class="tip-box"><p>✅ Tip: Pehle pattern dhundho, phir apply karo!</p></div>` }
-];
-
-const defaultQuizzes = [
-  { title:"SSC Math — Profit & Loss", category:"math", difficulty:"Medium",
-    questions:[
-      {q:"Ek dukandaar ne Rs. 800 mein kharida aur Rs. 1000 mein becha. Profit% kya hai?",opts:["20%","25%","30%","15%"],ans:1,exp:"Profit=200, P%=(200/800)×100=25%"},
-      {q:"SP=Rs.480, Loss%=20%. CP kya hoga?",opts:["Rs.560","Rs.600","Rs.640","Rs.580"],ans:1,exp:"CP=480×100/80=Rs.600"},
-      {q:"15% profit par Rs.1150 milte hain. CP kya hai?",opts:["Rs.900","Rs.1000","Rs.950","Rs.1100"],ans:1,exp:"CP=1150×100/115=Rs.1000"},
-      {q:"CP aur SP ka ratio 5:6 hai. Profit% kya hai?",opts:["15%","18%","20%","25%"],ans:2,exp:"P%=(6-5)/5×100=20%"},
-      {q:"Ek item 10% profit pe becha. Agar CP Rs.500 ho toh SP kya?",opts:["Rs.540","Rs.550","Rs.560","Rs.600"],ans:1,exp:"SP=500×110/100=Rs.550"}
-    ]},
-  { title:"Railway GK — Indian Railways", category:"gk", difficulty:"Easy",
-    questions:[
-      {q:"Indian Railways ki sthapana kab hui?",opts:["1853","1857","1861","1869"],ans:0,exp:"16 April 1853 ko pehli train Mumbai se Thane tak chali."},
-      {q:"Indian Railways mein kitne zones hain?",opts:["14","16","18","20"],ans:2,exp:"Filhaal 18 zones hain."},
-      {q:"India ki pehli Electric Train kab chali?",opts:["1925","1930","1935","1947"],ans:0,exp:"3 February 1925 ko Bombay Victoria Terminus se Kurla tak."},
-      {q:"Konsi train India mein sabse tez hai?",opts:["Rajdhani","Shatabdi","Vande Bharat","Duronto"],ans:2,exp:"Vande Bharat Express — 180 kmph design speed."},
-      {q:"Railway Board ka headquarter kahan hai?",opts:["Mumbai","Kolkata","New Delhi","Chennai"],ans:2,exp:"New Delhi mein hai."}
-    ]},
-  { title:"Reasoning — Coding Decoding", category:"reasoning", difficulty:"Medium",
-    questions:[
-      {q:"MANGO ko NBOHI likha jaye toh APPLE = ?",opts:["BQQMF","CQQNG","BQQMG","BQPMF"],ans:0,exp:"Har letter mein +1: A→B, P→Q, P→Q, L→M, E→F = BQQMF"},
-      {q:"Agar BOOK=2,15,15,11 toh CAT=?",opts:["3,1,20","4,2,21","2,1,19","3,2,20"],ans:0,exp:"A=1,B=2...Z=26 standard coding: C=3,A=1,T=20"},
-      {q:"Reasoning mein 'Analogy' ka matlab kya hai?",opts:["Ulta karna","Sambandhit jodi banana","Numbers todna","Letters badalna"],ans:1,exp:"Do words ka sambandh dekh kar wohi sambandh doosri jodi mein dhundna."},
-      {q:"Agar NORTH=56782, toh SOUTH = ?",opts:["34512","56123","13452","56234"],ans:0,exp:"Code mapping karke: S=3,O=4,U=5,T=1,H=2 → 34512"},
-      {q:"Series: 2,4,8,16,? kya aayega?",opts:["24","28","32","30"],ans:2,exp:"Har baar 2 se multiply: 16×2=32"}
-    ]}
-];
 
 // STATE
 let currentUser = null;
@@ -536,7 +467,7 @@ window.backHome = backHome;
 onAuthStateChanged(auth, async (user) => {
   if (user) {
     currentUser = user;
-    isAdmin = user.email === ADMIN_EMAIL;
+    isAdmin = user.email === ADMIN_EMAIL; // <-- Ye check karega ki Admin login hua hai
     await loadUserData(user.uid);
     await loadContent();
     showApp();
@@ -559,23 +490,11 @@ async function loadContent() {
   allNotes = [];
   const notesSnap = await getDocs(collection(db, "notes"));
   notesSnap.forEach(d => allNotes.push({ id: d.id, ...d.data() }));
-  if (allNotes.length === 0) {
-    for (const note of defaultNotes) {
-      const ref = await addDoc(collection(db, "notes"), { ...note, createdAt: new Date().toISOString() });
-      allNotes.push({ id: ref.id, ...note });
-    }
-  }
 
   // Load quizzes
   allQuizzes = [];
   const quizSnap = await getDocs(collection(db, "quizzes"));
   quizSnap.forEach(d => allQuizzes.push({ id: d.id, ...d.data() }));
-  if (allQuizzes.length === 0) {
-    for (const quiz of defaultQuizzes) {
-      const ref = await addDoc(collection(db, "quizzes"), { ...quiz, createdAt: new Date().toISOString() });
-      allQuizzes.push({ id: ref.id, ...quiz });
-    }
-  }
 }
 
 // AUTH FUNCTIONS
@@ -596,8 +515,7 @@ async function doLogin() {
     await signInWithEmailAndPassword(auth, email, pass);
   } catch (e) {
     btn.disabled = false; btn.textContent = 'Login करें →';
-    const msgs = { 'auth/invalid-credential': 'Email ya password galat hai', 'auth/user-not-found': 'Account nahi mila', 'auth/wrong-password': 'Password galat hai', 'auth/too-many-requests': 'Bahut zyada attempts — thodi der baad try karo' };
-    showError(err, msgs[e.code] || 'Login failed: ' + e.message);
+    showError(err, 'Login failed: ' + e.message);
   }
 }
 
@@ -620,8 +538,7 @@ async function doRegister() {
     });
   } catch (e) {
     btn.disabled = false; btn.textContent = 'Register करें →';
-    const msgs = { 'auth/email-already-in-use': 'Yeh email already registered hai', 'auth/invalid-email': 'Email format galat hai', 'auth/weak-password': 'Password zyada strong banana hoga' };
-    showError(err, msgs[e.code] || 'Registration failed: ' + e.message);
+    showError(err, 'Registration failed: ' + e.message);
   }
 }
 
@@ -644,11 +561,17 @@ function showApp() {
   document.getElementById('statScore').textContent = (currentUserData?.bestScore || 0) + '%';
   document.getElementById('statNotes').textContent = currentUserData?.notesRead || 0;
   document.getElementById('statPoints').textContent = currentUserData?.totalPoints || 0;
+  
+  // ADMIN PANEL DIKHANA HAI YA NAHI
   if (isAdmin) {
     document.getElementById('adminQuickCard').style.display = 'block';
     document.getElementById('nav-admin').style.display = 'flex';
     loadAdminData();
+  } else {
+    document.getElementById('adminQuickCard').style.display = 'none';
+    document.getElementById('nav-admin').style.display = 'none';
   }
+  
   renderNotes('all');
   renderQuizzes('all');
   renderHistory();
@@ -678,7 +601,7 @@ function renderNotes(filter) {
   grid.innerHTML = filtered.map(note => `
     <div class="note-card">
       <div class="note-header">
-        <div class="note-icon">${note.icon || '📄'}</div>
+        <div class="note-icon">📄</div>
         <div class="note-meta"><h3>${note.title}</h3><p>${note.category} • ${note.exam}</p></div>
       </div>
       <div class="tags-row"><span class="tag ${note.exam}">${note.exam?.toUpperCase()}</span><span class="tag">${note.category}</span></div>
@@ -692,12 +615,22 @@ function filterNotes(filter, btn) {
   renderNotes(filter);
 }
 
+// === GOOGLE DRIVE PDF MAGIC ===
 async function openNote(id) {
   const note = allNotes.find(n => n.id === id);
-  if (!note) return;
+  if (!note || !note.pdfUrl) return;
+  
   document.getElementById('readerTitle').textContent = note.title;
-  document.getElementById('readerBody').innerHTML = note.content;
+  
+  // Link ko Viewer banayein
+  let embedUrl = note.pdfUrl;
+  if(embedUrl.includes('/view')) {
+      embedUrl = embedUrl.replace('/view', '/preview');
+  }
+
+  document.getElementById('pdfViewer').src = embedUrl;
   document.getElementById('noteReader').style.display = 'block';
+  
   // Update stats
   if (currentUser) {
     await updateDoc(doc(db, "users", currentUser.uid), { notesRead: increment(1) });
@@ -706,7 +639,10 @@ async function openNote(id) {
   }
 }
 
-function closeReader() { document.getElementById('noteReader').style.display = 'none'; }
+function closeReader() { 
+    document.getElementById('noteReader').style.display = 'none'; 
+    document.getElementById('pdfViewer').src = ""; // Clear
+}
 
 // QUIZZES
 function renderQuizzes(filter) {
@@ -730,7 +666,7 @@ function filterQuizzes(filter, btn) {
   renderQuizzes(filter);
 }
 
-// QUIZ ACTIVE
+// QUIZ ACTIVE (Wahi purana mast logic)
 function startQuiz(id) {
   currentQuiz = allQuizzes.find(q => q.id === id);
   if (!currentQuiz) return;
@@ -795,7 +731,7 @@ async function submitQuiz() {
   document.getElementById('quizActive').style.display = 'none';
   const total = currentQuiz.questions.length;
   const pct = Math.round((correct / total) * 100);
-  // Save to Firebase
+  
   if (currentUser) {
     await addDoc(collection(db, "users", currentUser.uid, "results"), {
       quizTitle: currentQuiz.title, correct, wrong, score, pct,
@@ -857,7 +793,7 @@ async function renderHistory() {
   } catch (e) { list.innerHTML = '<div class="empty"><div class="ei">⚠️</div><p>Data load nahi hua</p></div>'; }
 }
 
-// ADMIN
+// ADMIN PANEL LOGIC
 async function loadAdminData() {
   // Student count
   const usersSnap = await getDocs(collection(db, "users"));
@@ -875,18 +811,23 @@ async function loadAdminData() {
   }).join('');
 }
 
+// NAYA: PDF Note Add Karne ka logic
 async function addNote() {
   const title = document.getElementById('noteTitle').value.trim();
   const category = document.getElementById('noteCategory').value;
   const exam = document.getElementById('noteExam').value;
-  const content = document.getElementById('noteContent').value.trim();
-  if (!title || !content) { alert('Title aur content zaroor bharein!'); return; }
-  const noteData = { title, category, exam, content, icon: '📄', createdAt: new Date().toISOString() };
+  const pdfUrl = document.getElementById('notePdfUrl').value.trim(); // Dhyan dein, ab content nahi link aayega
+  
+  if (!title || !pdfUrl) { alert('Title aur Google Drive Link zaroor bharein!'); return; }
+  
+  const noteData = { title, category, exam, pdfUrl, createdAt: new Date().toISOString() };
   const ref = await addDoc(collection(db, "notes"), noteData);
   allNotes.push({ id: ref.id, ...noteData });
+  
+  // Box khaali karo
   document.getElementById('noteTitle').value = '';
-  document.getElementById('noteContent').value = '';
-  alert('✅ Note save ho gaya!');
+  document.getElementById('notePdfUrl').value = '';
+  alert('✅ PDF Note save ho gaya aur live hai!');
   renderNotes('all');
 }
 
