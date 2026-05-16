@@ -1,0 +1,1078 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NotesVerse — SSC & Railway</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;700;800&family=Hind:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--saffron:#FF6B00;--deep:#0A0F2C;--blue:#1A3FAA;--accent:#00C9A7;--gold:#FFD700;--light:#F4F6FF;--text:#1E1E2E;--muted:#6B7280;--danger:#EF4444;--success:#10B981;--purple:#7C3AED;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Hind',sans-serif;background:var(--light);color:var(--text);}
+.screen{display:none;min-height:100vh;}
+.screen.active{display:block;}
+
+/* LOADING */
+#loadingScreen{background:var(--deep);display:none;align-items:center;justify-content:center;flex-direction:column;gap:16px;}
+#loadingScreen.active{display:flex;}
+.load-logo{font-family:'Baloo 2',sans-serif;font-size:36px;font-weight:800;color:#fff;}
+.load-logo span{color:var(--saffron);}
+.load-bar{width:220px;height:4px;background:rgba(255,255,255,0.15);border-radius:2px;overflow:hidden;}
+.load-fill{height:4px;background:linear-gradient(90deg,var(--saffron),var(--gold));border-radius:2px;animation:lf 1.5s ease-in-out infinite;}
+@keyframes lf{0%{width:0;margin-left:0}50%{width:60%}100%{width:0;margin-left:100%}}
+
+/* LOGIN */
+#loginScreen{background:linear-gradient(135deg,var(--deep),#1a237e);display:none;align-items:center;justify-content:center;min-height:100vh;position:relative;overflow:hidden;}
+#loginScreen.active{display:flex;}
+.orb{position:absolute;border-radius:50%;filter:blur(60px);opacity:0.15;}
+.orb1{width:350px;height:350px;background:var(--saffron);top:-80px;right:-80px;}
+.orb2{width:250px;height:250px;background:var(--accent);bottom:-60px;left:-60px;}
+.orb3{width:180px;height:180px;background:var(--purple);top:40%;left:5%;}
+.login-box{background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);backdrop-filter:blur(24px);border-radius:24px;padding:40px 34px;width:410px;max-width:95vw;position:relative;z-index:2;}
+.ll{text-align:center;margin-bottom:24px;}
+.ll-icon{width:60px;height:60px;background:linear-gradient(135deg,var(--saffron),#FF9A3C);border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:28px;margin:0 auto 10px;box-shadow:0 8px 24px rgba(255,107,0,0.4);}
+.ll h1{font-family:'Baloo 2',sans-serif;font-size:26px;font-weight:800;color:#fff;}
+.ll p{color:rgba(255,255,255,0.55);font-size:12px;margin-top:3px;}
+.tabs{display:flex;gap:6px;margin-bottom:22px;background:rgba(255,255,255,0.07);border-radius:12px;padding:4px;}
+.tb{flex:1;padding:9px;border:none;background:transparent;color:rgba(255,255,255,0.55);border-radius:9px;cursor:pointer;font-family:'Hind',sans-serif;font-size:13px;font-weight:600;transition:all 0.3s;}
+.tb.active{background:var(--saffron);color:#fff;}
+.fg{margin-bottom:14px;}
+.fg label{display:block;color:rgba(255,255,255,0.65);font-size:12px;margin-bottom:5px;font-weight:500;}
+.fg input,.fg select{width:100%;padding:12px 14px;background:rgba(255,255,255,0.09);border:1px solid rgba(255,255,255,0.18);border-radius:11px;color:#fff;font-family:'Hind',sans-serif;font-size:14px;outline:none;transition:all 0.3s;}
+.fg input::placeholder{color:rgba(255,255,255,0.3);}
+.fg input:focus{border-color:var(--saffron);background:rgba(255,255,255,0.14);}
+.fg select option{color:#000;}
+.btn-main{width:100%;padding:13px;background:linear-gradient(135deg,var(--saffron),#FF9A3C);border:none;border-radius:12px;color:#fff;font-size:15px;font-weight:700;cursor:pointer;font-family:'Baloo 2',sans-serif;box-shadow:0 6px 20px rgba(255,107,0,0.35);transition:all 0.3s;margin-top:6px;}
+.btn-main:hover{transform:translateY(-2px);}
+.btn-main:disabled{opacity:0.6;cursor:not-allowed;transform:none;}
+.err{background:rgba(239,68,68,0.18);border:1px solid rgba(239,68,68,0.35);color:#FCA5A5;padding:9px 12px;border-radius:9px;font-size:12px;margin-top:10px;display:none;}
+.err.show{display:block;}
+
+/* NAVBAR */
+.navbar{background:var(--deep);padding:0 18px;display:flex;align-items:center;justify-content:space-between;height:58px;position:sticky;top:0;z-index:100;box-shadow:0 3px 16px rgba(0,0,0,0.3);}
+.nav-logo{font-family:'Baloo 2',sans-serif;font-size:19px;font-weight:800;color:#fff;}
+.nav-logo span{color:var(--saffron);}
+.nav-r{display:flex;align-items:center;gap:8px;}
+.uchip{background:rgba(255,255,255,0.1);border-radius:18px;padding:5px 11px;font-size:12px;color:rgba(255,255,255,0.8);max-width:110px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.lout{background:rgba(239,68,68,0.18);border:1px solid rgba(239,68,68,0.28);color:#FCA5A5;padding:5px 11px;border-radius:8px;cursor:pointer;font-size:11px;font-weight:600;}
+
+/* BOTTOM NAV */
+.bnav{position:fixed;bottom:0;left:0;right:0;background:var(--deep);display:flex;border-top:1px solid rgba(255,255,255,0.08);z-index:100;}
+.ni{flex:1;padding:9px 0;text-align:center;cursor:pointer;color:rgba(255,255,255,0.38);transition:all 0.3s;}
+.ni.active{color:var(--saffron);}
+.ni-icon{font-size:19px;margin-bottom:2px;}
+.ni-lbl{font-size:10px;font-weight:600;display:block;}
+
+/* PAGES */
+.page{display:none;padding:14px 14px 82px;max-width:900px;margin:0 auto;}
+.page.active{display:block;}
+
+/* DASHBOARD */
+.wb{background:linear-gradient(135deg,var(--blue),var(--deep));border-radius:18px;padding:20px;color:#fff;margin-bottom:18px;position:relative;overflow:hidden;}
+.wb::after{content:'🎯';position:absolute;right:14px;bottom:-6px;font-size:65px;opacity:0.1;}
+.wb h2{font-family:'Baloo 2',sans-serif;font-size:19px;font-weight:800;}
+.wb p{color:rgba(255,255,255,0.65);font-size:12px;margin-top:2px;}
+.tbadge{display:inline-block;background:var(--saffron);padding:3px 10px;border-radius:18px;font-size:11px;font-weight:700;margin-top:8px;}
+.sgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:18px;}
+.sc{background:#fff;border-radius:14px;padding:14px;box-shadow:0 2px 10px rgba(0,0,0,0.06);}
+.sc-icon{font-size:20px;margin-bottom:5px;}
+.sc-val{font-family:'Baloo 2',sans-serif;font-size:24px;font-weight:800;color:var(--deep);}
+.sc-lbl{font-size:11px;color:var(--muted);font-weight:500;}
+.st{font-family:'Baloo 2',sans-serif;font-size:16px;font-weight:800;color:var(--deep);margin-bottom:10px;}
+.qgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:18px;}
+.qc{background:#fff;border-radius:14px;padding:16px;cursor:pointer;box-shadow:0 2px 10px rgba(0,0,0,0.06);transition:all 0.3s;border:2px solid transparent;}
+.qc:hover{transform:translateY(-3px);border-color:var(--saffron);}
+.qc-ic{font-size:26px;margin-bottom:7px;}
+.qc h3{font-family:'Baloo 2',sans-serif;font-size:13px;font-weight:700;color:var(--deep);}
+.qc p{font-size:11px;color:var(--muted);margin-top:2px;}
+.tip{background:#FFF7F0;border-left:4px solid var(--saffron);padding:11px 13px;border-radius:0 10px 10px 0;}
+.tip p{font-size:13px;color:var(--text);}
+
+/* NOTES */
+.ctabs{display:flex;gap:7px;margin-bottom:14px;overflow-x:auto;padding-bottom:3px;}
+.ctab{padding:6px 14px;border-radius:18px;border:2px solid #E5E7EB;background:#fff;cursor:pointer;font-size:12px;font-weight:600;color:var(--muted);white-space:nowrap;transition:all 0.3s;}
+.ctab.active{background:var(--saffron);border-color:var(--saffron);color:#fff;}
+.ngrid{display:grid;gap:10px;}
+.nc{background:#fff;border-radius:14px;padding:16px;box-shadow:0 2px 10px rgba(0,0,0,0.06);cursor:pointer;transition:all 0.3s;}
+.nc:hover{transform:translateY(-2px);box-shadow:0 5px 18px rgba(0,0,0,0.1);}
+.nh{display:flex;align-items:flex-start;gap:11px;margin-bottom:8px;}
+.ni2{width:40px;height:40px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;}
+.ni2.pdf{background:linear-gradient(135deg,#EF4444,#F87171);}
+.ni2.img{background:linear-gradient(135deg,#8B5CF6,#A78BFA);}
+.ni2.html{background:linear-gradient(135deg,#F59E0B,#FCD34D);}
+.ni2.doc{background:linear-gradient(135deg,#3B82F6,#60A5FA);}
+.ni2.text{background:linear-gradient(135deg,var(--blue),#4F46E5);}
+.nm h3{font-family:'Baloo 2',sans-serif;font-size:13px;font-weight:700;color:var(--deep);}
+.nm p{font-size:11px;color:var(--muted);margin-top:1px;}
+.trow{display:flex;gap:5px;flex-wrap:wrap;}
+.tag{background:var(--light);border-radius:5px;padding:2px 7px;font-size:10px;font-weight:600;color:var(--blue);}
+.tag.ssc{background:#FEF3C7;color:#92400E;}
+.tag.railway{background:#D1FAE5;color:#065F46;}
+.tag.both{background:#EEF2FF;color:#3730A3;}
+.rbtn{margin-top:9px;padding:7px 16px;border:none;border-radius:9px;font-size:12px;font-weight:700;cursor:pointer;color:#fff;}
+.rbtn.pdf{background:linear-gradient(135deg,#EF4444,#F87171);}
+.rbtn.img{background:linear-gradient(135deg,#8B5CF6,#A78BFA);}
+.rbtn.html{background:linear-gradient(135deg,#F59E0B,#FCD34D);color:#000;}
+.rbtn.doc{background:linear-gradient(135deg,#3B82F6,#60A5FA);}
+.rbtn.text{background:linear-gradient(135deg,var(--blue),#4F46E5);}
+
+/* QUIZ */
+.qzcard{background:#fff;border-radius:14px;padding:16px;box-shadow:0 2px 10px rgba(0,0,0,0.06);margin-bottom:10px;}
+.qztop{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;}
+.qztitle{font-family:'Baloo 2',sans-serif;font-size:14px;font-weight:700;color:var(--deep);}
+.df{padding:3px 9px;border-radius:18px;font-size:11px;font-weight:700;}
+.df-easy{background:#D1FAE5;color:#065F46;}
+.df-medium{background:#FEF3C7;color:#92400E;}
+.df-hard{background:#FEE2E2;color:#991B1B;}
+.qzinfo{display:flex;gap:10px;margin-bottom:10px;}
+.qzinfo span{font-size:12px;color:var(--muted);}
+.sbtn{width:100%;padding:10px;background:linear-gradient(135deg,var(--saffron),#FF9A3C);color:#fff;border:none;border-radius:11px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Baloo 2',sans-serif;transition:all 0.3s;}
+
+/* QUIZ ACTIVE */
+#quizActive{display:none;position:fixed;inset:0;background:var(--light);z-index:200;overflow-y:auto;padding:14px;}
+.qhdr{display:flex;justify-content:space-between;align-items:center;background:var(--deep);color:#fff;padding:13px 16px;border-radius:14px;margin-bottom:14px;}
+.qpb{background:rgba(255,255,255,0.18);height:5px;border-radius:3px;margin-top:7px;}
+.qpbf{height:5px;background:var(--accent);border-radius:3px;transition:width 0.5s;}
+.qtimer{background:var(--saffron);padding:7px 12px;border-radius:9px;font-weight:800;font-size:14px;font-family:'Baloo 2',sans-serif;}
+.qcard{background:#fff;border-radius:18px;padding:18px;box-shadow:0 4px 18px rgba(0,0,0,0.09);margin-bottom:12px;}
+.qnum{font-size:10px;color:var(--muted);font-weight:600;margin-bottom:7px;text-transform:uppercase;letter-spacing:1px;}
+.qtext{font-size:16px;font-weight:600;color:var(--deep);line-height:1.5;margin-bottom:16px;}
+.optg{display:grid;gap:9px;}
+.obtn{width:100%;padding:12px 14px;background:var(--light);border:2px solid #E5E7EB;border-radius:12px;text-align:left;cursor:pointer;font-size:13px;font-family:'Hind',sans-serif;font-weight:500;color:var(--text);transition:all 0.3s;}
+.obtn:hover:not(.answered){border-color:var(--saffron);background:#FFF7F0;}
+.obtn.correct{background:#D1FAE5;border-color:var(--success);color:#065F46;}
+.obtn.wrong{background:#FEE2E2;border-color:var(--danger);color:#991B1B;}
+.expb{background:#F0FDF4;border:1px solid #BBF7D0;border-radius:11px;padding:12px;margin-top:12px;}
+.expb h4{color:var(--success);font-size:12px;font-weight:700;margin-bottom:4px;}
+.expb p{font-size:13px;color:#065F46;}
+.nxtbtn{width:100%;padding:12px;background:linear-gradient(135deg,var(--blue),#4F46E5);color:#fff;border:none;border-radius:13px;font-size:14px;font-weight:700;cursor:pointer;font-family:'Baloo 2',sans-serif;margin-top:11px;}
+
+/* RESULT */
+.rw{text-align:center;padding:28px 14px;}
+.rcirc{width:120px;height:120px;border-radius:50%;margin:0 auto 18px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:'Baloo 2',sans-serif;}
+.rcirc.good{background:linear-gradient(135deg,var(--success),#34D399);}
+.rcirc.ok{background:linear-gradient(135deg,#F59E0B,#FCD34D);}
+.rcirc.bad{background:linear-gradient(135deg,var(--danger),#F87171);}
+.rscore{font-size:30px;font-weight:800;color:#fff;}
+.rlbl{font-size:11px;color:rgba(255,255,255,0.85);}
+.rtitle{font-family:'Baloo 2',sans-serif;font-size:20px;font-weight:800;color:var(--deep);margin-bottom:5px;}
+.rsub{color:var(--muted);font-size:13px;margin-bottom:20px;}
+.rstats{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-bottom:20px;}
+.rs{background:#fff;border-radius:12px;padding:12px;box-shadow:0 2px 10px rgba(0,0,0,0.06);}
+.rv{font-family:'Baloo 2',sans-serif;font-size:18px;font-weight:800;}
+.rl2{font-size:10px;color:var(--muted);}
+.rv.c{color:var(--success);}
+.rv.w{color:var(--danger);}
+.rv.s{color:var(--blue);}
+.rbtns{display:flex;gap:8px;justify-content:center;}
+.retrybtn{padding:11px 22px;background:linear-gradient(135deg,var(--saffron),#FF9A3C);color:#fff;border:none;border-radius:12px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Baloo 2',sans-serif;}
+.homebtn{padding:11px 22px;background:var(--light);color:var(--blue);border:2px solid var(--blue);border-radius:12px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Baloo 2',sans-serif;}
+
+/* NOTE READER */
+#noteReader{display:none;position:fixed;inset:0;background:#fff;z-index:200;overflow-y:auto;}
+.rnav{background:var(--deep);color:#fff;padding:13px 16px;display:flex;align-items:center;gap:11px;position:sticky;top:0;z-index:10;}
+.backbtn{background:rgba(255,255,255,0.1);border:none;color:#fff;padding:6px 11px;border-radius:9px;cursor:pointer;font-size:12px;}
+.rtitle2{font-family:'Baloo 2',sans-serif;font-size:15px;font-weight:700;}
+.rbody{padding:18px;max-width:700px;margin:0 auto;}
+/* iframe for HTML/PDF */
+.content-frame{width:100%;height:75vh;border:none;border-radius:12px;box-shadow:0 4px 20px rgba(0,0,0,0.1);}
+.img-view{width:100%;max-height:80vh;object-fit:contain;border-radius:12px;}
+
+/* ========== ADMIN PANEL ========== */
+#adminPage .page-header{background:linear-gradient(135deg,var(--deep),#1a237e);border-radius:18px;padding:20px;color:#fff;margin-bottom:18px;}
+#adminPage .page-header h2{font-family:'Baloo 2',sans-serif;font-size:20px;font-weight:800;}
+#adminPage .page-header p{color:rgba(255,255,255,0.65);font-size:12px;margin-top:3px;}
+.abadge{background:linear-gradient(135deg,var(--saffron),#FF9A3C);color:#fff;padding:2px 8px;border-radius:6px;font-size:10px;font-weight:700;margin-left:6px;}
+.admin-tabs{display:flex;gap:0;margin-bottom:18px;background:#fff;border-radius:14px;padding:4px;box-shadow:0 2px 10px rgba(0,0,0,0.06);}
+.atab{flex:1;padding:9px 4px;border:none;background:transparent;cursor:pointer;font-family:'Hind',sans-serif;font-size:11px;font-weight:700;color:var(--muted);border-radius:10px;transition:all 0.3s;text-align:center;}
+.atab.active{background:var(--deep);color:#fff;}
+.asec{display:none;}
+.asec.active{display:block;}
+
+/* Upload Area */
+.upload-area{border:2px dashed #CBD5E1;border-radius:16px;padding:28px;text-align:center;cursor:pointer;transition:all 0.3s;background:#fff;margin-bottom:14px;}
+.upload-area:hover,.upload-area.drag{border-color:var(--saffron);background:#FFF7F0;}
+.upload-area .ua-icon{font-size:36px;margin-bottom:10px;}
+.upload-area h3{font-family:'Baloo 2',sans-serif;font-size:15px;font-weight:700;color:var(--deep);margin-bottom:5px;}
+.upload-area p{font-size:12px;color:var(--muted);}
+.upload-area .file-types{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin-top:10px;}
+.ft{padding:3px 10px;border-radius:6px;font-size:11px;font-weight:700;}
+.ft.pdf{background:#FEE2E2;color:#991B1B;}
+.ft.img{background:#EDE9FE;color:#5B21B6;}
+.ft.html{background:#FEF3C7;color:#92400E;}
+.ft.doc{background:#DBEAFE;color:#1E40AF;}
+#fileInput{display:none;}
+.file-preview{background:#F8FAFC;border:1px solid #E2E8F0;border-radius:12px;padding:14px;margin-bottom:14px;display:none;}
+.fp-name{font-weight:700;color:var(--deep);font-size:14px;margin-bottom:4px;}
+.fp-size{font-size:12px;color:var(--muted);}
+.fp-type{display:inline-block;padding:2px 8px;border-radius:5px;font-size:11px;font-weight:700;margin-top:5px;}
+.aform{display:grid;gap:10px;}
+.aform input,.aform select,.aform textarea{width:100%;padding:11px 13px;border:2px solid #E5E7EB;border-radius:10px;font-family:'Hind',sans-serif;font-size:13px;outline:none;transition:all 0.3s;background:#fff;}
+.aform input:focus,.aform textarea:focus{border-color:var(--blue);}
+.aform textarea{min-height:90px;resize:vertical;}
+
+/* Progress bar */
+.upload-progress{background:#F1F5F9;border-radius:10px;padding:14px;margin-bottom:14px;display:none;}
+.up-label{font-size:12px;font-weight:600;color:var(--deep);margin-bottom:7px;}
+.up-bar{background:#E2E8F0;border-radius:4px;height:8px;overflow:hidden;}
+.up-fill{height:8px;background:linear-gradient(90deg,var(--saffron),var(--gold));border-radius:4px;transition:width 0.3s;width:0%;}
+.up-pct{font-size:11px;color:var(--muted);margin-top:4px;}
+
+.savebtn{padding:11px 20px;background:linear-gradient(135deg,var(--success),#34D399);color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Baloo 2',sans-serif;width:100%;}
+.savebtn:disabled{opacity:0.6;cursor:not-allowed;}
+.delbtn{padding:5px 11px;background:#FEE2E2;color:#991B1B;border:none;border-radius:7px;font-size:11px;font-weight:700;cursor:pointer;}
+
+/* Content List in Admin */
+.content-list{display:grid;gap:8px;}
+.cl-item{background:#fff;border-radius:12px;padding:13px;display:flex;align-items:center;gap:11px;box-shadow:0 2px 8px rgba(0,0,0,0.05);}
+.cl-icon{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
+.cl-info{flex:1;min-width:0;}
+.cl-title{font-size:13px;font-weight:700;color:var(--deep);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.cl-meta{font-size:11px;color:var(--muted);}
+.cl-actions{display:flex;gap:6px;flex-shrink:0;}
+
+/* Students */
+.srow{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--light);}
+.srow:last-child{border-bottom:none;}
+.sname{font-size:13px;font-weight:600;color:var(--deep);}
+.semail{font-size:11px;color:var(--muted);}
+.sscore{background:var(--light);padding:3px 9px;border-radius:7px;font-size:12px;font-weight:700;color:var(--blue);}
+
+/* Add Quiz */
+.quiz-builder{display:grid;gap:10px;}
+.q-entry{background:#F8FAFC;border:1px solid #E2E8F0;border-radius:12px;padding:13px;margin-bottom:6px;}
+.q-entry-title{font-size:12px;font-weight:700;color:var(--blue);margin-bottom:8px;}
+.remove-q{float:right;background:#FEE2E2;color:#991B1B;border:none;border-radius:6px;padding:2px 8px;font-size:11px;cursor:pointer;}
+.add-q-btn{width:100%;padding:10px;background:var(--light);border:2px dashed #CBD5E1;border-radius:10px;color:var(--blue);font-size:13px;font-weight:700;cursor:pointer;transition:all 0.3s;}
+.add-q-btn:hover{border-color:var(--blue);background:#EEF2FF;}
+
+.empty{text-align:center;padding:28px;color:var(--muted);}
+.ei{font-size:36px;margin-bottom:8px;}
+
+::-webkit-scrollbar{width:5px;}
+::-webkit-scrollbar-track{background:#f1f1f1;}
+::-webkit-scrollbar-thumb{background:#CBD5E1;border-radius:3px;}
+</style>
+</head>
+<body>
+
+<div id="loadingScreen" class="screen active">
+  <div class="load-logo">Notes<span>Verse</span></div>
+  <div class="load-bar"><div class="load-fill"></div></div>
+  <p style="color:rgba(255,255,255,0.4);font-size:12px;margin-top:8px;">Loading...</p>
+</div>
+
+<div id="loginScreen" class="screen">
+  <div class="orb orb1"></div><div class="orb orb2"></div><div class="orb orb3"></div>
+  <div class="login-box">
+    <div class="ll">
+      <div class="ll-icon">📚</div>
+      <h1>NotesVerse</h1>
+      <p>SSC & Railway Preparation Platform</p>
+    </div>
+    <div class="tabs">
+      <button class="tb active" onclick="switchTab('login')">Login</button>
+      <button class="tb" onclick="switchTab('register')">Register</button>
+    </div>
+    <div id="lForm">
+      <div class="fg"><label>📧 Email</label><input type="email" id="lEmail" placeholder="Email address"></div>
+      <div class="fg"><label>🔒 Password</label><input type="password" id="lPass" placeholder="Password"></div>
+      <button class="btn-main" id="lBtn" onclick="doLogin()">Login करें →</button>
+      <div class="err" id="lErr"></div>
+    </div>
+    <div id="rForm" style="display:none">
+      <div class="fg"><label>👤 Full Name</label><input type="text" id="rName" placeholder="Apna naam"></div>
+      <div class="fg"><label>📧 Email</label><input type="email" id="rEmail" placeholder="Email address"></div>
+      <div class="fg"><label>🎯 Exam Target</label>
+        <select id="rExam"><option>SSC CGL</option><option>SSC CHSL</option><option>SSC MTS</option><option>Railway RRB NTPC</option><option>Railway Group D</option><option>Railway ALP</option></select>
+      </div>
+      <div class="fg"><label>🔒 Password (min 6 characters)</label><input type="password" id="rPass" placeholder="Password banayein"></div>
+      <button class="btn-main" id="rBtn" onclick="doRegister()">Register करें →</button>
+      <div class="err" id="rErr"></div>
+    </div>
+  </div>
+</div>
+
+<div id="appScreen" class="screen">
+  <nav class="navbar">
+    <div class="nav-logo">Notes<span>Verse</span></div>
+    <div class="nav-r">
+      <div class="uchip" id="uName">Student</div>
+      <button class="lout" onclick="doLogout()">Logout</button>
+    </div>
+  </nav>
+
+  <div id="dashPage" class="page active">
+    <div class="wb">
+      <h2>Namaste, <span id="wName">Student</span>! 🙏</h2>
+      <p>Aaj ki preparation shuru karein</p>
+      <div class="tbadge" id="tBadge">🎯 SSC CGL</div>
+    </div>
+    <div class="sgrid">
+      <div class="sc"><div class="sc-icon">📝</div><div class="sc-val" id="sQuiz">0</div><div class="sc-lbl">Quizzes Diye</div></div>
+      <div class="sc"><div class="sc-icon">🏆</div><div class="sc-val" id="sBest">0%</div><div class="sc-lbl">Best Score</div></div>
+      <div class="sc"><div class="sc-icon">📖</div><div class="sc-val" id="sNotes">0</div><div class="sc-lbl">Notes Padhe</div></div>
+      <div class="sc"><div class="sc-icon">⭐</div><div class="sc-val" id="sPts">0</div><div class="sc-lbl">Total Points</div></div>
+    </div>
+    <p class="st">⚡ Quick Access</p>
+    <div class="qgrid">
+      <div class="qc" onclick="goTo('quizPage')"><div class="qc-ic">📝</div><h3>Quiz Dena</h3><p>Practice karo</p></div>
+      <div class="qc" onclick="goTo('notesPage')"><div class="qc-ic">📖</div><h3>Notes Padho</h3><p>Chapter-wise</p></div>
+      <div class="qc" onclick="goTo('historyPage')"><div class="qc-ic">📊</div><h3>My Progress</h3><p>Score history</p></div>
+      <div class="qc" id="adminQC" style="display:none" onclick="goTo('adminPage')"><div class="qc-ic">👑</div><h3>Admin Panel</h3><p>Manage content</p></div>
+    </div>
+    <div class="tip"><p>💡 <strong>Aaj ka GK:</strong> Bharat ka pehla satellite "Aryabhata" 19 April 1975 ko launch hua tha.</p></div>
+  </div>
+
+  <div id="notesPage" class="page">
+    <p class="st">📖 Study Notes</p>
+    <div class="ctabs">
+      <button class="ctab active" onclick="filterNotes('all',this)">Sab</button>
+      <button class="ctab" onclick="filterNotes('ssc',this)">SSC</button>
+      <button class="ctab" onclick="filterNotes('railway',this)">Railway</button>
+      <button class="ctab" onclick="filterNotes('math',this)">Math</button>
+      <button class="ctab" onclick="filterNotes('gk',this)">GK</button>
+      <button class="ctab" onclick="filterNotes('reasoning',this)">Reasoning</button>
+    </div>
+    <div class="ngrid" id="notesGrid"></div>
+  </div>
+
+  <div id="quizPage" class="page">
+    <p class="st">📝 Practice Tests</p>
+    <div class="ctabs">
+      <button class="ctab active" onclick="filterQuizzes('all',this)">Sab</button>
+      <button class="ctab" onclick="filterQuizzes('math',this)">Math</button>
+      <button class="ctab" onclick="filterQuizzes('reasoning',this)">Reasoning</button>
+      <button class="ctab" onclick="filterQuizzes('gk',this)">GK</button>
+    </div>
+    <div id="quizList"></div>
+  </div>
+
+  <div id="historyPage" class="page">
+    <p class="st">📊 Meri Progress</p>
+    <div id="historyList"></div>
+  </div>
+
+  <div id="adminPage" class="page">
+    <div class="page-header">
+      <h2>👑 Admin Panel <span class="abadge">ADMIN</span></h2>
+      <p>Content manage karo — upload, edit, delete</p>
+    </div>
+    <div class="sgrid" style="margin-bottom:16px;">
+      <div class="sc"><div class="sc-icon">👥</div><div class="sc-val" id="aStudents">0</div><div class="sc-lbl">Students</div></div>
+      <div class="sc"><div class="sc-icon">📚</div><div class="sc-val" id="aContent">0</div><div class="sc-lbl">Total Content</div></div>
+    </div>
+    <div class="admin-tabs">
+      <button class="atab active" onclick="switchAdmin('upload',this)">📤 Upload</button>
+      <button class="atab" onclick="switchAdmin('quiz',this)">📝 Quiz</button>
+      <button class="atab" onclick="switchAdmin('manage',this)">📋 Manage</button>
+      <button class="atab" onclick="switchAdmin('students',this)">👥 Students</button>
+    </div>
+
+    <div class="asec active" id="asec-upload">
+      
+      <div class="upload-area" id="dropZone" onclick="document.getElementById('fileInput').click()" ondragover="dragOver(event)" ondragleave="dragLeave(event)" ondrop="dropFile(event)">
+        <div class="ua-icon">📂</div>
+        <h3>File Yahan Drop Karo ya Click Karo</h3>
+        <p>Koi bhi file upload kar sakte ho</p>
+        <div class="file-types">
+          <span class="ft pdf">PDF</span>
+          <span class="ft img">Image</span>
+          <span class="ft html">HTML</span>
+          <span class="ft doc">Word/Doc</span>
+          <span class="ft" style="background:#D1FAE5;color:#065F46;">Text</span>
+          <span class="ft" style="background:#EDE9FE;color:#5B21B6;">Any File</span>
+        </div>
+      </div>
+      <input type="file" id="fileInput" accept="*/*" onchange="fileSelected(this.files[0])">
+
+      <div class="file-preview" id="filePreview">
+        <div class="fp-name" id="fpName">filename.pdf</div>
+        <div class="fp-size" id="fpSize">Size: 0 KB</div>
+        <span class="fp-type" id="fpType">PDF</span>
+      </div>
+
+      <div class="upload-progress" id="uploadProgress">
+        <div class="up-label">⬆️ Uploading...</div>
+        <div class="up-bar"><div class="up-fill" id="upFill"></div></div>
+        <div class="up-pct" id="upPct">0%</div>
+      </div>
+
+      <div class="aform">
+        <input type="text" id="uTitle" placeholder="Content ka title *">
+        <select id="uCategory">
+          <option value="math">Math</option>
+          <option value="gk">GK / History</option>
+          <option value="reasoning">Reasoning</option>
+          <option value="english">English</option>
+          <option value="railway">Railway GK</option>
+          <option value="hindi">Hindi</option>
+          <option value="science">Science</option>
+          <option value="polity">Polity</option>
+        </select>
+        <select id="uExam">
+          <option value="ssc">SSC</option>
+          <option value="railway">Railway</option>
+          <option value="both">Dono (SSC + Railway)</option>
+        </select>
+
+        <div style="text-align:center; margin: 10px 0; color: var(--muted); font-size: 13px; font-weight: bold;">--- YA FIR ---</div>
+        <input type="url" id="uDriveLink" placeholder="🔗 Google Drive PDF Link Paste Karein (Optional)" oninput="document.getElementById('uploadBtn').disabled=false">
+
+        <button class="savebtn" id="uploadBtn" onclick="uploadContent()" disabled>📤 Upload / Save Karo</button>
+      </div>
+    </div>
+
+    <div class="asec" id="asec-quiz">
+      <div class="aform">
+        <input type="text" id="qTitle" placeholder="Quiz ka title *">
+        <select id="qCat"><option value="math">Math</option><option value="gk">GK</option><option value="reasoning">Reasoning</option><option value="english">English</option></select>
+        <select id="qDiff"><option value="Easy">Easy</option><option value="Medium">Medium</option><option value="Hard">Hard</option></select>
+      </div>
+      <div style="margin:14px 0;">
+        <p style="font-size:13px;font-weight:700;color:var(--deep);margin-bottom:10px;">📝 Questions:</p>
+        <div id="questionsBuilder"></div>
+        <button class="add-q-btn" onclick="addQuestionField()">➕ Naya Sawaal Add Karo</button>
+      </div>
+      <button class="savebtn" onclick="saveQuiz()">✅ Quiz Save Karo</button>
+    </div>
+
+    <div class="asec" id="asec-manage">
+      <p style="font-size:13px;color:var(--muted);margin-bottom:12px;">Sab uploaded content:</p>
+      <div class="content-list" id="manageList"></div>
+    </div>
+
+    <div class="asec" id="asec-students">
+      <p style="font-size:13px;color:var(--muted);margin-bottom:12px;">Registered students:</p>
+      <div id="studentsList"></div>
+    </div>
+  </div>
+
+  <div class="bnav">
+    <div class="ni active" onclick="goTo('dashPage')" id="nav-dash"><div class="ni-icon">🏠</div><span class="ni-lbl">Home</span></div>
+    <div class="ni" onclick="goTo('notesPage')" id="nav-notes"><div class="ni-icon">📖</div><span class="ni-lbl">Notes</span></div>
+    <div class="ni" onclick="goTo('quizPage')" id="nav-quiz"><div class="ni-icon">📝</div><span class="ni-lbl">Quiz</span></div>
+    <div class="ni" onclick="goTo('historyPage')" id="nav-history"><div class="ni-icon">📊</div><span class="ni-lbl">Progress</span></div>
+    <div class="ni" onclick="goTo('adminPage')" id="nav-admin" style="display:none"><div class="ni-icon">👑</div><span class="ni-lbl">Admin</span></div>
+  </div>
+</div>
+
+<div id="quizActive">
+  <div style="max-width:700px;margin:0 auto;">
+    <div class="qhdr">
+      <div><div id="qInfo" style="font-size:12px;color:rgba(255,255,255,0.8);">Q 1/5</div><div class="qpb"><div class="qpbf" id="qPbf" style="width:20%"></div></div></div>
+      <div class="qtimer" id="qTimer">⏱ 30s</div>
+    </div>
+    <div class="qcard">
+      <div class="qnum" id="qNum">Question 1</div>
+      <div class="qtext" id="qText"></div>
+      <div class="optg" id="optG"></div>
+      <div id="expB" style="display:none" class="expb"><h4>✅ Explanation</h4><p id="expT"></p></div>
+    </div>
+    <button class="nxtbtn" id="nextBtn" onclick="nextQ()" style="display:none">Agla Sawaal →</button>
+    <button class="nxtbtn" id="submitBtn" onclick="submitQuiz()" style="display:none;background:linear-gradient(135deg,var(--success),#34D399)">Quiz Submit ✓</button>
+  </div>
+</div>
+
+<div id="noteReader">
+  <div class="rnav">
+    <button class="backbtn" onclick="closeReader()">← Wapas</button>
+    <div class="rtitle2" id="readerTitle">Note</div>
+  </div>
+  <div class="rbody" id="readerBody"></div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-app.js";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-auth.js";
+import { getFirestore, doc, setDoc, getDoc, collection, addDoc, getDocs, deleteDoc, query, orderBy, updateDoc, increment } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js";
+import { getStorage, ref, uploadBytesResumable, getDownloadURL, deleteObject } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-storage.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyB9fxf1D_30gKT6JuBtas1PHHpcBRlDNRQ",
+  authDomain: "notesverse-da966.firebaseapp.com",
+  projectId: "notesverse-da966",
+  storageBucket: "notesverse-da966.firebasestorage.app",
+  messagingSenderId: "1022337274507",
+  appId: "1:1022337274507:web:d4b37251f0d396fa4a3a8e"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+const storage = getStorage(app);
+
+const ADMIN_EMAIL = "educationaj2@gmail.com";
+
+// STATE
+let currentUser = null, userData = null, isAdmin = false;
+let allNotes = [], allQuizzes = [];
+let currentQuiz = null, currentQ = 0, correct = 0, wrong = 0, score = 0;
+let answered = false, timerInterval = null, timeLeft = 30;
+let selectedFile = null;
+let questionCount = 0;
+
+// DEFAULT DATA
+const defaultNotes = [
+  {title:"Profit & Loss — Formulas",category:"math",exam:"ssc",type:"text",icon:"➗",
+   content:`<h2 style="font-family:'Baloo 2',sans-serif;color:#0A0F2C;margin-bottom:8px">Profit & Loss</h2><p style="color:#6B7280;margin-bottom:16px">SSC aur Railway mein 3-4 sawaal aate hain.</p><div style="background:#EEF2FF;border-radius:12px;padding:16px;margin:12px 0;text-align:center"><div style="font-size:17px;font-weight:700;color:#1A3FAA;font-family:monospace">Profit% = (Profit/CP) × 100</div></div><div style="background:#EEF2FF;border-radius:12px;padding:16px;margin:12px 0;text-align:center"><div style="font-size:17px;font-weight:700;color:#1A3FAA;font-family:monospace">SP = CP × (100+P%) / 100</div></div><div style="background:#FFF7F0;border-left:4px solid #FF6B00;padding:12px 14px;border-radius:0 10px 10px 0;margin:12px 0"><p style="font-weight:500">🔑 Trick: Agar 20% Profit aur 20% Loss same item pe ho → Overall 1% Loss</p></div><div style="background:#D1FAE5;border-radius:10px;padding:12px;margin-top:14px"><p style="color:#065F46;font-weight:500">✅ SSC Tip: CP=100 maanke solve karo — zyada fast hoga!</p></div>`},
+  {title:"Indian History — Key Points",category:"gk",exam:"ssc",type:"text",icon:"🏛️",
+   content:`<h2 style="font-family:'Baloo 2',sans-serif;color:#0A0F2C;margin-bottom:8px">Indian History</h2><p style="color:#6B7280;margin-bottom:16px">SSC CGL aur Railway NTPC mein 4-5 sawaal.</p><h3 style="color:#1A3FAA;margin-bottom:8px">🏹 Ancient India</h3><ul style="padding-left:18px;margin-bottom:14px"><li style="margin-bottom:6px"><strong>Maurya Dynasty:</strong> 322 BC — Chandragupta Maurya</li><li style="margin-bottom:6px"><strong>Ashoka:</strong> Kalinga Yudh 261 BC</li><li style="margin-bottom:6px"><strong>Gupta Period:</strong> "Golden Age of India"</li></ul><h3 style="color:#1A3FAA;margin-bottom:8px">🇮🇳 Freedom Struggle</h3><ul style="padding-left:18px"><li style="margin-bottom:6px">1857 — Pratham Swatantrata Sangram</li><li style="margin-bottom:6px">1930 — Dandi March (Salt Satyagraha)</li><li style="margin-bottom:6px">1942 — Quit India Movement</li><li style="margin-bottom:6px">15 August 1947 — Swatantrata</li></ul><div style="background:#D1FAE5;border-radius:10px;padding:12px;margin-top:14px"><p style="color:#065F46;font-weight:500">✅ Railway Tip: Governors-General list zaroor yaad karo!</p></div>`},
+  {title:"Railway — Important Facts",category:"railway",exam:"railway",type:"text",icon:"🚂",
+   content:`<h2 style="font-family:'Baloo 2',sans-serif;color:#0A0F2C;margin-bottom:8px">Indian Railways</h2><ul style="padding-left:18px;margin-bottom:14px"><li style="margin-bottom:6px">Sthapana: <strong>16 April 1853</strong></li><li style="margin-bottom:6px">Total Zones: <strong>18</strong></li><li style="margin-bottom:6px">Sabse tez train: <strong>Vande Bharat Express</strong></li><li style="margin-bottom:6px">India ka 4th largest rail network</li></ul><h3 style="color:#1A3FAA;margin-bottom:8px">🚦 Signals</h3><ul style="padding-left:18px"><li><strong>Green</strong> — Line clear</li><li><strong>Yellow</strong> — Caution</li><li><strong>Red</strong> — Stop</li></ul>`}
+];
+
+const defaultQuizzes = [
+  {title:"SSC Math — Profit & Loss",category:"math",difficulty:"Medium",questions:[
+    {q:"Rs.800 mein kharida, Rs.1000 mein becha. Profit%?",opts:["20%","25%","30%","15%"],ans:1,exp:"P%=(200/800)×100=25%"},
+    {q:"SP=Rs.480, Loss%=20%. CP?",opts:["Rs.560","Rs.600","Rs.640","Rs.580"],ans:1,exp:"CP=480×100/80=Rs.600"},
+    {q:"15% profit pe Rs.1150 milte hain. CP?",opts:["Rs.900","Rs.1000","Rs.950","Rs.1100"],ans:1,exp:"CP=1150×100/115=Rs.1000"},
+    {q:"CP:SP = 5:6. Profit%?",opts:["15%","18%","20%","25%"],ans:2,exp:"P%=(1/5)×100=20%"},
+    {q:"10% profit pe CP Rs.500 ho toh SP?",opts:["Rs.540","Rs.550","Rs.560","Rs.530"],ans:1,exp:"SP=500×110/100=Rs.550"}
+  ]},
+  {title:"Railway GK — Facts",category:"gk",difficulty:"Easy",questions:[
+    {q:"Indian Railways sthapana kab hui?",opts:["1853","1857","1861","1869"],ans:0,exp:"16 April 1853 — Mumbai se Thane."},
+    {q:"Total zones kitne hain?",opts:["14","16","18","20"],ans:2,exp:"18 zones hain."},
+    {q:"Sabse tez train?",opts:["Rajdhani","Shatabdi","Vande Bharat","Duronto"],ans:2,exp:"Vande Bharat — 180 kmph."},
+    {q:"Railway Board headquarter?",opts:["Mumbai","Kolkata","New Delhi","Chennai"],ans:2,exp:"New Delhi."},
+    {q:"Pehli electric train kab?",opts:["1925","1930","1935","1940"],ans:0,exp:"3 Feb 1925 — Bombay VT to Kurla."}
+  ]},
+  {title:"Reasoning — Series",category:"reasoning",difficulty:"Medium",questions:[
+    {q:"2, 4, 8, 16, ?",opts:["24","28","32","30"],ans:2,exp:"×2 pattern: 16×2=32"},
+    {q:"1, 4, 9, 16, ?",opts:["20","25","36","30"],ans:1,exp:"Perfect squares: 5²=25"},
+    {q:"A, C, E, G, ?",opts:["H","I","J","K"],ans:1,exp:"+2 letter skip: G ke baad I"},
+    {q:"3, 6, 12, 24, ?",opts:["36","48","42","40"],ans:1,exp:"×2: 24×2=48"},
+    {q:"5, 10, 20, 40, ?",opts:["60","70","80","90"],ans:2,exp:"×2: 40×2=80"}
+  ]}
+];
+
+// EXPOSE
+window.switchTab=switchTab; window.doLogin=doLogin; window.doRegister=doRegister; window.doLogout=doLogout;
+window.goTo=goTo; window.filterNotes=filterNotes; window.filterQuizzes=filterQuizzes;
+window.openNote=openNote; window.closeReader=closeReader; window.startQuiz=startQuiz;
+window.nextQ=nextQ; window.submitQuiz=submitQuiz; window.retryQuiz=retryQuiz; window.backHome=backHome;
+window.switchAdmin=switchAdmin; window.uploadContent=uploadContent; window.saveQuiz=saveQuiz;
+window.addQuestionField=addQuestionField; window.deleteContent=deleteContent; window.deleteQuiz=deleteQuiz;
+window.fileSelected=fileSelected; window.dragOver=dragOver; window.dragLeave=dragLeave; window.dropFile=dropFile;
+
+// AUTH
+onAuthStateChanged(auth, async (user) => {
+  if (user) {
+    currentUser = user;
+    isAdmin = user.email.toLowerCase().trim() === ADMIN_EMAIL.toLowerCase().trim();
+    await loadUserData();
+    await loadContent();
+    showApp();
+  } else {
+    showLogin();
+  }
+});
+
+async function loadUserData() {
+  const snap = await getDoc(doc(db, "users", currentUser.uid));
+  if (snap.exists()) userData = snap.data();
+}
+
+async function loadContent() {
+  allNotes = [];
+  const ns = await getDocs(collection(db, "notes"));
+  ns.forEach(d => allNotes.push({id:d.id,...d.data()}));
+  if (!allNotes.length) {
+    for (const n of defaultNotes) {
+      const r = await addDoc(collection(db,"notes"),{...n,createdAt:new Date().toISOString()});
+      allNotes.push({id:r.id,...n});
+    }
+  }
+  allQuizzes = [];
+  const qs = await getDocs(collection(db,"quizzes"));
+  qs.forEach(d => allQuizzes.push({id:d.id,...d.data()}));
+  if (!allQuizzes.length) {
+    for (const q of defaultQuizzes) {
+      const r = await addDoc(collection(db,"quizzes"),{...q,createdAt:new Date().toISOString()});
+      allQuizzes.push({id:r.id,...q});
+    }
+  }
+}
+
+function switchTab(t) {
+  document.getElementById('lForm').style.display=t==='login'?'block':'none';
+  document.getElementById('rForm').style.display=t==='register'?'block':'none';
+  document.querySelectorAll('.tb').forEach((b,i)=>b.classList.toggle('active',i===(t==='login'?0:1)));
+}
+
+async function doLogin() {
+  const email=document.getElementById('lEmail').value.trim(), pass=document.getElementById('lPass').value;
+  const btn=document.getElementById('lBtn'), err=document.getElementById('lErr');
+  if(!email||!pass){showErr(err,'Email aur password zaroor bharein');return;}
+  btn.disabled=true; btn.textContent='Login ho raha hai...';
+  try { await signInWithEmailAndPassword(auth,email,pass); }
+  catch(e){
+    btn.disabled=false; btn.textContent='Login करें →';
+    const m={'auth/invalid-credential':'Email ya password galat hai','auth/too-many-requests':'Bahut zyada attempts'};
+    showErr(err,m[e.code]||'Login failed');
+  }
+}
+
+async function doRegister() {
+  const name=document.getElementById('rName').value.trim(), email=document.getElementById('rEmail').value.trim();
+  const exam=document.getElementById('rExam').value, pass=document.getElementById('rPass').value;
+  const btn=document.getElementById('rBtn'), err=document.getElementById('rErr');
+  if(!name||!email||!pass){showErr(err,'Sab fields bharein');return;}
+  if(pass.length<6){showErr(err,'Password minimum 6 characters ka hona chahiye');return;}
+  btn.disabled=true; btn.textContent='Register ho raha hai...';
+  try {
+    const c=await createUserWithEmailAndPassword(auth,email,pass);
+    await setDoc(doc(db,"users",c.user.uid),{name,email,exam,uid:c.user.uid,quizCount:0,bestScore:0,notesRead:0,totalPoints:0,joinedAt:new Date().toISOString()});
+  } catch(e){
+    btn.disabled=false; btn.textContent='Register करें →';
+    const m={'auth/email-already-in-use':'Email already registered hai','auth/weak-password':'Password zyada strong chahiye'};
+    showErr(err,m[e.code]||'Registration failed');
+  }
+}
+
+async function doLogout(){await signOut(auth);}
+function showErr(el,msg){el.textContent=msg;el.classList.add('show');setTimeout(()=>el.classList.remove('show'),4000);}
+
+function showApp(){
+  document.getElementById('loadingScreen').classList.remove('active');
+  document.getElementById('loginScreen').classList.remove('active');
+  document.getElementById('appScreen').classList.add('active');
+  const name=userData?.name||currentUser.email.split('@')[0];
+  document.getElementById('uName').textContent=name;
+  document.getElementById('wName').textContent=name;
+  document.getElementById('tBadge').textContent='🎯 '+(userData?.exam||'SSC CGL');
+  document.getElementById('sQuiz').textContent=userData?.quizCount||0;
+  document.getElementById('sBest').textContent=(userData?.bestScore||0)+'%';
+  document.getElementById('sNotes').textContent=userData?.notesRead||0;
+  document.getElementById('sPts').textContent=userData?.totalPoints||0;
+  if(isAdmin){
+    document.getElementById('adminQC').style.display='block';
+    document.getElementById('nav-admin').style.display='flex';
+    addQuestionField();
+  }
+  renderNotes('all'); renderQuizzes('all');
+}
+
+function showLogin(){
+  document.getElementById('loadingScreen').classList.remove('active');
+  document.getElementById('appScreen').classList.remove('active');
+  document.getElementById('loginScreen').classList.add('active');
+}
+
+function goTo(pid){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById(pid)?.classList.add('active');
+  const m={dashPage:'nav-dash',notesPage:'nav-notes',quizPage:'nav-quiz',historyPage:'nav-history',adminPage:'nav-admin'};
+  document.querySelectorAll('.ni').forEach(n=>n.classList.remove('active'));
+  if(m[pid]) document.getElementById(m[pid])?.classList.add('active');
+  if(pid==='adminPage') loadAdminData();
+  if(pid==='historyPage') renderHistory();
+}
+
+// FILE UPLOAD
+const typeMap={
+  'application/pdf':{label:'PDF',color:'pdf',icon:'📄'},
+  'image/jpeg':{label:'Image',color:'img',icon:'🖼️'},
+  'image/png':{label:'Image',color:'img',icon:'🖼️'},
+  'image/gif':{label:'Image',color:'img',icon:'🖼️'},
+  'image/webp':{label:'Image',color:'img',icon:'🖼️'},
+  'text/html':{label:'HTML',color:'html',icon:'🌐'},
+  'application/msword':{label:'Word',color:'doc',icon:'📝'},
+  'application/vnd.openxmlformats-officedocument.wordprocessingml.document':{label:'Word',color:'doc',icon:'📝'},
+  'text/plain':{label:'Text',color:'text',icon:'📃'},
+};
+
+function getTypeInfo(mime){return typeMap[mime]||{label:'File',color:'text',icon:'📎'};}
+
+function dragOver(e){e.preventDefault();document.getElementById('dropZone').classList.add('drag');}
+function dragLeave(){document.getElementById('dropZone').classList.remove('drag');}
+function dropFile(e){e.preventDefault();dragLeave();const f=e.dataTransfer.files[0];if(f)fileSelected(f);}
+
+function fileSelected(file){
+  if(!file) return;
+  selectedFile=file;
+  const ti=getTypeInfo(file.type);
+  const prev=document.getElementById('filePreview');
+  document.getElementById('fpName').textContent=file.name;
+  document.getElementById('fpSize').textContent='Size: '+(file.size/1024).toFixed(1)+' KB';
+  const ft=document.getElementById('fpType');
+  ft.textContent=ti.label; ft.className='fp-type ft '+ti.color;
+  prev.style.display='block';
+  document.getElementById('uploadBtn').disabled=false;
+  if(!document.getElementById('uTitle').value) document.getElementById('uTitle').value=file.name.replace(/\.[^.]+$/,'');
+}
+
+async function uploadContent(){
+  const title=document.getElementById('uTitle').value.trim();
+  const driveLink=document.getElementById('uDriveLink').value.trim();
+
+  if(!title){alert('Title zaroor likho!');return;}
+  if(!selectedFile && !driveLink){alert('Koi File select karo ya Google Drive link daalo!');return;}
+
+  const category=document.getElementById('uCategory').value;
+  const exam=document.getElementById('uExam').value;
+  const btn=document.getElementById('uploadBtn');
+  btn.disabled=true; btn.textContent='Saving...';
+
+  // GOOGLE DRIVE LINK SAVE LOGIC
+  if(driveLink) {
+    const noteData={title,category,exam,type:'pdf',icon:'📄',fileUrl:driveLink,fileName:'Google Drive PDF',mimeType:'application/pdf',createdAt:new Date().toISOString()};
+    try {
+        const r=await addDoc(collection(db,"notes"),noteData);
+        allNotes.push({id:r.id,...noteData});
+        btn.disabled=false; btn.textContent='📤 Upload / Save Karo';
+        document.getElementById('uTitle').value='';
+        document.getElementById('uDriveLink').value='';
+        alert('✅ Google Drive Note save ho gaya!');
+        renderNotes('all');
+        renderManageList();
+    } catch(e) {
+        alert('Error: ' + e.message);
+        btn.disabled=false; btn.textContent='📤 Upload / Save Karo';
+    }
+    return;
+  }
+
+  // CLAUDE'S DIRECT FIREBASE FILE UPLOAD LOGIC
+  const ti=getTypeInfo(selectedFile.type);
+  const prog=document.getElementById('uploadProgress');
+  prog.style.display='block';
+  const storRef=ref(storage,`content/${Date.now()}_${selectedFile.name}`);
+  const uploadTask=uploadBytesResumable(storRef,selectedFile);
+  uploadTask.on('state_changed',
+    snap=>{
+      const pct=Math.round(snap.bytesTransferred/snap.totalBytes*100);
+      document.getElementById('upFill').style.width=pct+'%';
+      document.getElementById('upPct').textContent=pct+'%';
+    },
+    err=>{prog.style.display='none';btn.disabled=false;btn.textContent='📤 Upload / Save Karo';alert('Upload failed: '+err.message);},
+    async ()=>{
+      const url=await getDownloadURL(uploadTask.snapshot.ref);
+      const noteData={title,category,exam,type:ti.color,icon:ti.icon,fileUrl:url,fileName:selectedFile.name,mimeType:selectedFile.type,createdAt:new Date().toISOString()};
+      const r=await addDoc(collection(db,"notes"),noteData);
+      allNotes.push({id:r.id,...noteData});
+      prog.style.display='none';
+      document.getElementById('filePreview').style.display='none';
+      btn.disabled=false; btn.textContent='📤 Upload / Save Karo';
+      document.getElementById('uTitle').value='';
+      selectedFile=null;
+      document.getElementById('uploadBtn').disabled=true;
+      alert('✅ Content upload ho gaya!');
+      renderNotes('all');
+      renderManageList();
+    }
+  );
+}
+
+// NOTES RENDER
+function getTypeColor(type){const m={pdf:'#EF4444',img:'#8B5CF6',html:'#F59E0B',doc:'#3B82F6',text:'#1A3FAA',reasoning:'#EC4899'};return m[type]||'#1A3FAA';}
+
+function renderNotes(filter){
+  const grid=document.getElementById('notesGrid');
+  const filtered=filter==='all'?allNotes:allNotes.filter(n=>n.category===filter||n.exam===filter);
+  if(!filtered.length){grid.innerHTML='<div class="empty"><div class="ei">📭</div><p>Koi notes nahi</p></div>';return;}
+  grid.innerHTML=filtered.map(n=>{
+    const t=n.type||'text';
+    const btnLabel=t==='pdf'?'📄 PDF Kholo':t==='img'?'🖼️ Image Dekho':t==='html'?'🌐 Open HTML':t==='doc'?'📝 Download':t==='text'?'📖 Padho':'📂 Open';
+    return `<div class="nc">
+      <div class="nh">
+        <div class="ni2 ${t}">${n.icon||'📄'}</div>
+        <div class="nm"><h3>${n.title}</h3><p>${n.category} • ${n.exam}</p></div>
+      </div>
+      <div class="trow"><span class="tag ${n.exam}">${n.exam?.toUpperCase()}</span><span class="tag">${n.category}</span><span class="tag" style="background:#EDE9FE;color:#5B21B6">${(n.type||'text').toUpperCase()}</span></div>
+      <button class="rbtn ${t}" onclick="openNote('${n.id}')">${btnLabel}</button>
+    </div>`;
+  }).join('');
+}
+
+function filterNotes(f,btn){
+  document.querySelectorAll('#notesPage .ctab').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active'); renderNotes(f);
+}
+
+async function openNote(id){
+  const note=allNotes.find(n=>n.id===id);
+  if(!note) return;
+  document.getElementById('readerTitle').textContent=note.title;
+  const body=document.getElementById('readerBody');
+  const t=note.type||'text';
+
+  // GOOGLE DRIVE SMOOTH VIEWER MAGIC ADDED HERE
+  if(t==='pdf'&&note.fileUrl){
+    let embedUrl = note.fileUrl;
+    if (embedUrl.includes('drive.google.com')) {
+        if (embedUrl.includes('/view')) {
+            embedUrl = embedUrl.replace('/view', '/preview').split('?')[0];
+        } else if (embedUrl.includes('file/d/')) {
+            let fileId = embedUrl.split('file/d/')[1].split('/')[0];
+            embedUrl = `https://drive.google.com/file/d/${fileId}/preview`;
+        }
+    }
+    body.innerHTML=`<p style="font-size:13px;color:var(--muted);margin-bottom:12px;">📄 PDF — <a href="${note.fileUrl}" target="_blank" style="color:var(--blue);font-weight:700">New tab mein kholein ↗</a></p><iframe class="content-frame" src="${embedUrl}"></iframe>`;
+  } else if(t==='img'&&note.fileUrl){
+    body.innerHTML=`<img class="img-view" src="${note.fileUrl}" alt="${note.title}">`;
+  } else if(t==='html'&&note.fileUrl){
+    body.innerHTML=`<p style="font-size:13px;color:var(--muted);margin-bottom:12px;">🌐 HTML Page — <a href="${note.fileUrl}" target="_blank" style="color:var(--blue);font-weight:700">New tab mein kholein ↗</a></p><iframe class="content-frame" src="${note.fileUrl}" sandbox="allow-scripts allow-same-origin"></iframe>`;
+  } else if(t==='doc'&&note.fileUrl){
+    body.innerHTML=`<div style="text-align:center;padding:40px"><div style="font-size:48px;margin-bottom:16px">📝</div><p style="color:var(--deep);font-weight:700;margin-bottom:12px">${note.title}</p><a href="${note.fileUrl}" download style="background:linear-gradient(135deg,var(--blue),#4F46E5);color:#fff;padding:12px 24px;border-radius:12px;text-decoration:none;font-weight:700">⬇️ Download Karo</a></div>`;
+  } else {
+    body.innerHTML=note.content||'<p style="color:var(--muted)">Content nahi mila</p>';
+  }
+  document.getElementById('noteReader').style.display='block';
+  if(currentUser){
+    await updateDoc(doc(db,"users",currentUser.uid),{notesRead:increment(1)});
+    if(userData) userData.notesRead=(userData.notesRead||0)+1;
+    document.getElementById('sNotes').textContent=userData?.notesRead||0;
+  }
+}
+
+function closeReader(){document.getElementById('noteReader').style.display='none';}
+
+// QUIZ
+function renderQuizzes(filter){
+  const list=document.getElementById('quizList');
+  const filtered=filter==='all'?allQuizzes:allQuizzes.filter(q=>q.category===filter);
+  if(!filtered.length){list.innerHTML='<div class="empty"><div class="ei">📭</div><p>Koi quiz nahi</p></div>';return;}
+  list.innerHTML=filtered.map(q=>`<div class="qzcard">
+    <div class="qztop"><div class="qztitle">${q.title}</div><span class="df df-${q.difficulty?.toLowerCase()}">${q.difficulty}</span></div>
+    <div class="qzinfo"><span>📝 ${q.questions?.length||0} Sawaal</span><span>⏱ 30s/Q</span><span>📊 ${q.category}</span></div>
+    <button class="sbtn" onclick="startQuiz('${q.id}')">🚀 Start Quiz</button>
+  </div>`).join('');
+}
+
+function filterQuizzes(f,btn){
+  document.querySelectorAll('#quizPage .ctab').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active'); renderQuizzes(f);
+}
+
+function startQuiz(id){
+  currentQuiz=allQuizzes.find(q=>q.id===id);
+  if(!currentQuiz) return;
+  currentQ=0; correct=0; wrong=0; score=0;
+  document.getElementById('quizActive').style.display='block';
+  showQuestion();
+}
+
+function showQuestion(){
+  answered=false; clearInterval(timerInterval);
+  const q=currentQuiz.questions[currentQ];
+  const total=currentQuiz.questions.length;
+  document.getElementById('qInfo').textContent=`Q ${currentQ+1}/${total}`;
+  document.getElementById('qPbf').style.width=`${((currentQ+1)/total)*100}%`;
+  document.getElementById('qNum').textContent=`Question ${currentQ+1}`;
+  document.getElementById('qText').textContent=q.q;
+  document.getElementById('expB').style.display='none';
+  document.getElementById('nextBtn').style.display='none';
+  document.getElementById('submitBtn').style.display='none';
+  document.getElementById('optG').innerHTML=q.opts.map((o,i)=>`<button class="obtn" onclick="selectAns(${i})">${String.fromCharCode(65+i)}. ${o}</button>`).join('');
+  timeLeft=30;
+  document.getElementById('qTimer').textContent=`⏱ ${timeLeft}s`;
+  timerInterval=setInterval(()=>{
+    timeLeft--;
+    document.getElementById('qTimer').textContent=`⏱ ${timeLeft}s`;
+    if(timeLeft<=0){clearInterval(timerInterval);if(!answered)autoExpire();}
+  },1000);
+}
+
+window.selectAns=function(idx){
+  if(answered) return;
+  answered=true; clearInterval(timerInterval);
+  const q=currentQuiz.questions[currentQ];
+  const btns=document.querySelectorAll('.obtn');
+  btns.forEach(b=>b.classList.add('answered'));
+  btns[q.ans].classList.add('correct');
+  if(idx!==q.ans){btns[idx].classList.add('wrong');wrong++;}else{correct++;score+=10;}
+  document.getElementById('expT').textContent=q.exp;
+  document.getElementById('expB').style.display='block';
+  const isLast=currentQ>=currentQuiz.questions.length-1;
+  document.getElementById(isLast?'submitBtn':'nextBtn').style.display='block';
+};
+
+function autoExpire(){
+  answered=true; wrong++;
+  const q=currentQuiz.questions[currentQ];
+  document.querySelectorAll('.obtn').forEach(b=>b.classList.add('answered'));
+  document.querySelectorAll('.obtn')[q.ans]?.classList.add('correct');
+  document.getElementById('expT').textContent='⏰ Time out! '+q.exp;
+  document.getElementById('expB').style.display='block';
+  const isLast=currentQ>=currentQuiz.questions.length-1;
+  document.getElementById(isLast?'submitBtn':'nextBtn').style.display='block';
+}
+
+function nextQ(){currentQ++;showQuestion();}
+
+async function submitQuiz(){
+  clearInterval(timerInterval);
+  document.getElementById('quizActive').style.display='none';
+  const total=currentQuiz.questions.length;
+  const pct=Math.round((correct/total)*100);
+  if(currentUser){
+    await addDoc(collection(db,"users",currentUser.uid,"results"),{quizTitle:currentQuiz.title,correct,wrong,score,pct,total,date:new Date().toISOString()});
+    const best=Math.max(userData?.bestScore||0,pct);
+    await updateDoc(doc(db,"users",currentUser.uid),{quizCount:increment(1),bestScore:best,totalPoints:increment(score)});
+    if(userData){userData.quizCount=(userData.quizCount||0)+1;userData.bestScore=best;userData.totalPoints=(userData.totalPoints||0)+score;}
+    document.getElementById('sQuiz').textContent=userData?.quizCount||0;
+    document.getElementById('sBest').textContent=(userData?.bestScore||0)+'%';
+    document.getElementById('sPts').textContent=userData?.totalPoints||0;
+  }
+  showResult(pct);
+}
+
+function showResult(pct){
+  const g=pct>=70?'good':pct>=40?'ok':'bad';
+  const msg=pct>=70?'🏆 Bahut badiya!':pct>=40?'📈 Acha kiya!':'💪 Aur mehnat karo!';
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  const el=document.createElement('div');
+  el.className='page active'; el.id='resultPage';
+  el.innerHTML=`<div class="rw">
+    <div class="rcirc ${g}"><div class="rscore">${pct}%</div><div class="rlbl">Score</div></div>
+    <div class="rtitle">${msg}</div><div class="rsub">${currentQuiz.title}</div>
+    <div class="rstats">
+      <div class="rs"><div class="rv c">${correct}</div><div class="rl2">✅ Sahi</div></div>
+      <div class="rs"><div class="rv w">${wrong}</div><div class="rl2">❌ Galat</div></div>
+      <div class="rs"><div class="rv s">${score}</div><div class="rl2">⭐ Points</div></div>
+    </div>
+    <div class="rbtns"><button class="retrybtn" onclick="retryQuiz()">🔄 Dobara</button><button class="homebtn" onclick="backHome()">🏠 Home</button></div>
+  </div>`;
+  document.getElementById('appScreen').insertBefore(el,document.querySelector('.bnav'));
+}
+
+function retryQuiz(){document.getElementById('resultPage')?.remove();startQuiz(currentQuiz.id);}
+function backHome(){document.getElementById('resultPage')?.remove();goTo('dashPage');}
+
+// HISTORY
+async function renderHistory(){
+  const list=document.getElementById('historyList');
+  if(!currentUser) return;
+  try{
+    const snap=await getDocs(query(collection(db,"users",currentUser.uid,"results"),orderBy("date","desc")));
+    if(snap.empty){list.innerHTML='<div class="empty"><div class="ei">📊</div><p>Abhi koi quiz nahi diya</p></div>';return;}
+    list.innerHTML=snap.docs.map(d=>{
+      const r=d.data(), date=new Date(r.date).toLocaleDateString('hi-IN');
+      const c=r.pct>=70?'#10B981':r.pct>=40?'#F59E0B':'#EF4444';
+      return `<div class="qzcard" style="margin-bottom:10px">
+        <div class="qztop"><div class="qztitle">${r.quizTitle}</div><span style="color:${c};font-weight:800;font-size:15px">${r.pct}%</span></div>
+        <div class="qzinfo"><span>✅${r.correct}</span><span>❌${r.wrong}</span><span>⭐${r.score}</span><span>📅${date}</span></div>
+      </div>`;
+    }).join('');
+  }catch(e){list.innerHTML='<div class="empty"><div class="ei">⚠️</div><p>Data load nahi hua</p></div>';}
+}
+
+// ADMIN
+function switchAdmin(sec,btn){
+  document.querySelectorAll('.atab').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.asec').forEach(s=>s.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('asec-'+sec).classList.add('active');
+  if(sec==='manage') renderManageList();
+  if(sec==='students') loadStudents();
+}
+
+async function loadAdminData(){
+  const us=await getDocs(collection(db,"users"));
+  document.getElementById('aStudents').textContent=us.size;
+  document.getElementById('aContent').textContent=allNotes.length+allQuizzes.length;
+}
+
+function renderManageList(){
+  const list=document.getElementById('manageList');
+  const all=[...allNotes.map(n=>({...n,kind:'note'})),...allQuizzes.map(q=>({...q,kind:'quiz'}))];
+  if(!all.length){list.innerHTML='<div class="empty"><div class="ei">📭</div><p>Koi content nahi</p></div>';return;}
+  list.innerHTML=all.map(item=>`<div class="cl-item">
+    <div class="cl-icon" style="background:linear-gradient(135deg,${item.kind==='quiz'?'#FF6B00,#FF9A3C':'#1A3FAA,#4F46E5'})">${item.kind==='quiz'?'📝':item.icon||'📄'}</div>
+    <div class="cl-info">
+      <div class="cl-title">${item.title}</div>
+      <div class="cl-meta">${item.kind==='quiz'?'Quiz':'Note'} • ${item.category||''} • ${item.exam||''}</div>
+    </div>
+    <div class="cl-actions">
+      <button class="delbtn" onclick="${item.kind==='quiz'?`deleteQuiz('${item.id}')`:`deleteContent('${item.id}')`}">🗑️</button>
+    </div>
+  </div>`).join('');
+}
+
+async function loadStudents(){
+  const list=document.getElementById('studentsList');
+  const snap=await getDocs(collection(db,"users"));
+  if(snap.empty){list.innerHTML='<div class="empty"><p>Koi student nahi</p></div>';return;}
+  list.innerHTML=snap.docs.map(d=>{const u=d.data();return `<div class="srow">
+    <div><div class="sname">${u.name||'Unknown'}</div><div class="semail">${u.email} • ${u.exam||''}</div></div>
+    <div class="sscore">🏆 ${u.bestScore||0}%</div>
+  </div>`;}).join('');
+}
+
+async function deleteContent(id){
+  if(!confirm('Yeh note delete karna chahte ho?')) return;
+  const note=allNotes.find(n=>n.id===id);
+  if(note?.fileUrl){
+    try{const r=ref(storage,note.fileUrl);await deleteObject(r);}catch(e){}
+  }
+  await deleteDoc(doc(db,"notes",id));
+  allNotes=allNotes.filter(n=>n.id!==id);
+  renderNotes('all'); renderManageList();
+  document.getElementById('aContent').textContent=allNotes.length+allQuizzes.length;
+  alert('✅ Note delete ho gaya!');
+}
+
+async function deleteQuiz(id){
+  if(!confirm('Yeh quiz delete karna chahte ho?')) return;
+  await deleteDoc(doc(db,"quizzes",id));
+  allQuizzes=allQuizzes.filter(q=>q.id!==id);
+  renderQuizzes('all'); renderManageList();
+  document.getElementById('aContent').textContent=allNotes.length+allQuizzes.length;
+  alert('✅ Quiz delete ho gaya!');
+}
+
+// QUIZ BUILDER
+function addQuestionField(){
+  questionCount++;
+  const div=document.createElement('div');
+  div.className='q-entry'; div.id='qentry'+questionCount;
+  div.innerHTML=`<div class="q-entry-title">Sawaal ${questionCount} <button class="remove-q" onclick="removeQ(${questionCount})">✕ Hatao</button></div>
+    <div class="aform">
+      <input type="text" id="qq${questionCount}" placeholder="Sawaal likhein *">
+      <input type="text" id="qa${questionCount}" placeholder="Option A *">
+      <input type="text" id="qb${questionCount}" placeholder="Option B *">
+      <input type="text" id="qc${questionCount}" placeholder="Option C *">
+      <input type="text" id="qd${questionCount}" placeholder="Option D *">
+      <select id="qans${questionCount}">
+        <option value="0">✅ Sahi Jawab: A</option>
+        <option value="1">✅ Sahi Jawab: B</option>
+        <option value="2">✅ Sahi Jawab: C</option>
+        <option value="3">✅ Sahi Jawab: D</option>
+      </select>
+      <input type="text" id="qexp${questionCount}" placeholder="Explanation (optional)">
+    </div>`;
+  document.getElementById('questionsBuilder').appendChild(div);
+}
+
+window.removeQ=function(n){document.getElementById('qentry'+n)?.remove();}
+
+async function saveQuiz(){
+  const title=document.getElementById('qTitle').value.trim();
+  if(!title){alert('Quiz ka title zaroor likho!');return;}
+  const entries=document.querySelectorAll('.q-entry');
+  if(!entries.length){alert('Kam se kam ek sawaal add karo!');return;}
+  const questions=[];
+  for(const e of entries){
+    const n=e.id.replace('qentry','');
+    const q=document.getElementById('qq'+n)?.value.trim();
+    const a=document.getElementById('qa'+n)?.value.trim();
+    const b=document.getElementById('qb'+n)?.value.trim();
+    const c=document.getElementById('qc'+n)?.value.trim();
+    const d=document.getElementById('qd'+n)?.value.trim();
+    if(!q||!a||!b||!c||!d){alert('Sabhi sawaalon ke sab options bharein!');return;}
+    questions.push({q,opts:[a,b,c,d],ans:parseInt(document.getElementById('qans'+n)?.value||0),exp:document.getElementById('qexp'+n)?.value||''});
+  }
+  const data={title,category:document.getElementById('qCat').value,difficulty:document.getElementById('qDiff').value,questions,createdAt:new Date().toISOString()};
+  const r=await addDoc(collection(db,"quizzes"),data);
+  allQuizzes.push({id:r.id,...data});
+  document.getElementById('qTitle').value='';
+  document.getElementById('questionsBuilder').innerHTML='';
+  questionCount=0; addQuestionField();
+  renderQuizzes('all');
+  document.getElementById('aContent').textContent=allNotes.length+allQuizzes.length;
+  alert('✅ Quiz save ho gaya!');
+}
+</script>
+</body>
+</html>
