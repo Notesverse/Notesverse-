@@ -1,0 +1,913 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NotesVerse — SSC & Railway Preparation</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;700;800&family=Hind:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --saffron:#FF6B00; --deep:#0A0F2C; --blue:#1A3FAA; --accent:#00C9A7;
+  --gold:#FFD700; --light:#F4F6FF; --card:#FFFFFF; --text:#1E1E2E;
+  --muted:#6B7280; --danger:#EF4444; --success:#10B981;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Hind',sans-serif;background:var(--light);color:var(--text);}
+
+/* SCREENS */
+.screen{display:none;min-height:100vh;}
+.screen.active{display:block;}
+
+/* LOADING */
+#loadingScreen{background:var(--deep);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:16px;}
+#loadingScreen.active{display:flex;}
+.loader-logo{font-family:'Baloo 2',sans-serif;font-size:32px;font-weight:800;color:#fff;}
+.loader-logo span{color:var(--saffron);}
+.loader-bar{width:200px;height:4px;background:rgba(255,255,255,0.2);border-radius:2px;overflow:hidden;}
+.loader-fill{height:4px;background:var(--saffron);border-radius:2px;animation:load 1.5s ease-in-out infinite;}
+@keyframes load{0%{width:0}100%{width:100%}}
+
+/* LOGIN */
+#loginScreen{background:linear-gradient(135deg,var(--deep) 0%,var(--blue) 60%,#0D2680 100%);display:none;align-items:center;justify-content:center;position:relative;overflow:hidden;}
+#loginScreen.active{display:flex;}
+.bg-circle{position:absolute;border-radius:50%;opacity:0.08;}
+.bc1{width:400px;height:400px;background:var(--saffron);top:-100px;right:-100px;animation:float 8s ease-in-out infinite;}
+.bc2{width:250px;height:250px;background:var(--accent);bottom:-80px;left:-60px;animation:float 6s ease-in-out infinite reverse;}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-20px)}}
+.login-box{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.15);backdrop-filter:blur(20px);border-radius:24px;padding:44px 36px;width:420px;max-width:95vw;position:relative;z-index:2;box-shadow:0 30px 80px rgba(0,0,0,0.4);}
+.login-logo{text-align:center;margin-bottom:28px;}
+.logo-icon{width:64px;height:64px;background:linear-gradient(135deg,var(--saffron),#FF9A3C);border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:30px;margin:0 auto 12px;box-shadow:0 8px 24px rgba(255,107,0,0.4);}
+.login-logo h1{font-family:'Baloo 2',sans-serif;font-size:28px;font-weight:800;color:#fff;}
+.login-logo p{color:rgba(255,255,255,0.6);font-size:13px;margin-top:4px;}
+.tab-row{display:flex;gap:8px;margin-bottom:24px;background:rgba(255,255,255,0.08);border-radius:12px;padding:4px;}
+.tab-btn{flex:1;padding:10px;border:none;background:transparent;color:rgba(255,255,255,0.6);border-radius:10px;cursor:pointer;font-family:'Hind',sans-serif;font-size:14px;font-weight:600;transition:all 0.3s;}
+.tab-btn.active{background:var(--saffron);color:#fff;box-shadow:0 4px 12px rgba(255,107,0,0.4);}
+.form-group{margin-bottom:16px;}
+.form-group label{display:block;color:rgba(255,255,255,0.7);font-size:13px;margin-bottom:6px;font-weight:500;}
+.form-group input,.form-group select{width:100%;padding:13px 16px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:12px;color:#fff;font-family:'Hind',sans-serif;font-size:15px;outline:none;transition:all 0.3s;}
+.form-group input::placeholder{color:rgba(255,255,255,0.35);}
+.form-group input:focus{border-color:var(--saffron);background:rgba(255,255,255,0.15);}
+.form-group select option{color:#000;}
+.btn-primary{width:100%;padding:14px;background:linear-gradient(135deg,var(--saffron),#FF9A3C);border:none;border-radius:12px;color:#fff;font-size:16px;font-weight:700;cursor:pointer;font-family:'Baloo 2',sans-serif;box-shadow:0 6px 20px rgba(255,107,0,0.4);transition:all 0.3s;margin-top:8px;}
+.btn-primary:hover{transform:translateY(-2px);}
+.btn-primary:disabled{opacity:0.6;cursor:not-allowed;transform:none;}
+.error-msg{background:rgba(239,68,68,0.2);border:1px solid rgba(239,68,68,0.4);color:#FCA5A5;padding:10px 14px;border-radius:10px;font-size:13px;margin-top:12px;display:none;}
+.error-msg.show{display:block;}
+
+/* NAVBAR */
+.navbar{background:var(--deep);color:#fff;padding:0 20px;display:flex;align-items:center;justify-content:space-between;height:60px;position:sticky;top:0;z-index:100;box-shadow:0 4px 20px rgba(0,0,0,0.3);}
+.nav-logo{font-family:'Baloo 2',sans-serif;font-size:20px;font-weight:800;}
+.nav-logo span{color:var(--saffron);}
+.nav-right{display:flex;align-items:center;gap:10px;}
+.user-chip{background:rgba(255,255,255,0.1);border-radius:20px;padding:6px 12px;font-size:13px;color:rgba(255,255,255,0.8);max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.logout-btn{background:rgba(239,68,68,0.2);border:1px solid rgba(239,68,68,0.3);color:#FCA5A5;padding:6px 12px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:600;}
+
+/* BOTTOM NAV */
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:var(--deep);display:flex;border-top:1px solid rgba(255,255,255,0.1);z-index:100;}
+.nav-item{flex:1;padding:10px 0;text-align:center;cursor:pointer;color:rgba(255,255,255,0.4);transition:all 0.3s;}
+.nav-item.active{color:var(--saffron);}
+.nav-icon{font-size:20px;margin-bottom:2px;}
+.nav-label{font-size:10px;font-weight:600;display:block;}
+
+/* PAGES */
+.page{display:none;padding:16px 16px 85px;max-width:900px;margin:0 auto;}
+.page.active{display:block;}
+
+/* DASHBOARD */
+.welcome-banner{background:linear-gradient(135deg,var(--blue),var(--deep));border-radius:20px;padding:22px;color:#fff;margin-bottom:20px;position:relative;overflow:hidden;}
+.welcome-banner::after{content:'🎯';position:absolute;right:16px;bottom:-8px;font-size:70px;opacity:0.12;}
+.welcome-banner h2{font-family:'Baloo 2',sans-serif;font-size:20px;font-weight:800;}
+.welcome-banner p{color:rgba(255,255,255,0.7);font-size:13px;margin-top:3px;}
+.target-badge{display:inline-block;background:var(--saffron);padding:4px 12px;border-radius:20px;font-size:12px;font-weight:700;margin-top:10px;}
+.stats-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:20px;}
+.stat-card{background:#fff;border-radius:16px;padding:16px;box-shadow:0 2px 12px rgba(0,0,0,0.07);}
+.stat-icon{font-size:22px;margin-bottom:6px;}
+.stat-val{font-family:'Baloo 2',sans-serif;font-size:26px;font-weight:800;color:var(--deep);}
+.stat-lbl{font-size:11px;color:var(--muted);font-weight:500;}
+.sec-title{font-family:'Baloo 2',sans-serif;font-size:17px;font-weight:800;color:var(--deep);margin-bottom:12px;}
+.quick-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:20px;}
+.quick-card{background:#fff;border-radius:16px;padding:18px;cursor:pointer;box-shadow:0 2px 12px rgba(0,0,0,0.07);transition:all 0.3s;border:2px solid transparent;}
+.quick-card:hover{transform:translateY(-3px);border-color:var(--saffron);}
+.qc-icon{font-size:28px;margin-bottom:8px;}
+.quick-card h3{font-family:'Baloo 2',sans-serif;font-size:14px;font-weight:700;color:var(--deep);}
+.quick-card p{font-size:11px;color:var(--muted);margin-top:2px;}
+
+/* NOTES */
+.cat-tabs{display:flex;gap:8px;margin-bottom:16px;overflow-x:auto;padding-bottom:4px;}
+.cat-tab{padding:7px 16px;border-radius:20px;border:2px solid #E5E7EB;background:#fff;cursor:pointer;font-size:12px;font-weight:600;color:var(--muted);white-space:nowrap;transition:all 0.3s;}
+.cat-tab.active{background:var(--saffron);border-color:var(--saffron);color:#fff;}
+.notes-grid{display:grid;gap:12px;}
+.note-card{background:#fff;border-radius:16px;padding:18px;box-shadow:0 2px 12px rgba(0,0,0,0.07);cursor:pointer;transition:all 0.3s;}
+.note-card:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,0.12);}
+.note-header{display:flex;align-items:flex-start;gap:12px;margin-bottom:10px;}
+.note-icon{width:42px;height:42px;background:linear-gradient(135deg,var(--blue),#4F46E5);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+.note-meta h3{font-family:'Baloo 2',sans-serif;font-size:14px;font-weight:700;color:var(--deep);}
+.note-meta p{font-size:11px;color:var(--muted);margin-top:2px;}
+.tags-row{display:flex;gap:6px;flex-wrap:wrap;}
+.tag{background:var(--light);border-radius:6px;padding:2px 8px;font-size:10px;font-weight:600;color:var(--blue);}
+.tag.ssc{background:#FEF3C7;color:#92400E;}
+.tag.railway{background:#D1FAE5;color:#065F46;}
+.read-btn{margin-top:10px;padding:8px 18px;background:linear-gradient(135deg,var(--blue),#4F46E5);color:#fff;border:none;border-radius:10px;font-size:12px;font-weight:700;cursor:pointer;}
+
+/* QUIZ LIST */
+.quiz-card{background:#fff;border-radius:16px;padding:18px;box-shadow:0 2px 12px rgba(0,0,0,0.07);margin-bottom:12px;}
+.quiz-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;}
+.quiz-title{font-family:'Baloo 2',sans-serif;font-size:15px;font-weight:700;color:var(--deep);}
+.diff{padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;}
+.diff-easy{background:#D1FAE5;color:#065F46;}
+.diff-medium{background:#FEF3C7;color:#92400E;}
+.diff-hard{background:#FEE2E2;color:#991B1B;}
+.quiz-info{display:flex;gap:12px;margin-bottom:12px;}
+.quiz-info span{font-size:12px;color:var(--muted);}
+.start-btn{width:100%;padding:11px;background:linear-gradient(135deg,var(--saffron),#FF9A3C);color:#fff;border:none;border-radius:12px;font-size:14px;font-weight:700;cursor:pointer;font-family:'Baloo 2',sans-serif;transition:all 0.3s;}
+.start-btn:hover{transform:translateY(-2px);}
+
+/* QUIZ ACTIVE */
+#quizActive{display:none;position:fixed;inset:0;background:var(--light);z-index:200;overflow-y:auto;padding:16px;}
+.quiz-hdr{display:flex;justify-content:space-between;align-items:center;background:var(--deep);color:#fff;padding:14px 18px;border-radius:16px;margin-bottom:16px;}
+.q-info{font-size:13px;color:rgba(255,255,255,0.8);}
+.q-pbar{background:rgba(255,255,255,0.2);height:5px;border-radius:3px;margin-top:8px;}
+.q-pfill{height:5px;background:var(--accent);border-radius:3px;transition:width 0.5s;}
+.q-timer{background:var(--saffron);padding:8px 14px;border-radius:10px;font-weight:800;font-size:15px;font-family:'Baloo 2',sans-serif;}
+.q-card{background:#fff;border-radius:20px;padding:20px;box-shadow:0 4px 20px rgba(0,0,0,0.1);margin-bottom:14px;}
+.q-num{font-size:11px;color:var(--muted);font-weight:600;margin-bottom:8px;text-transform:uppercase;letter-spacing:1px;}
+.q-text{font-size:17px;font-weight:600;color:var(--deep);line-height:1.5;margin-bottom:18px;}
+.opts{display:grid;gap:10px;}
+.opt-btn{width:100%;padding:13px 16px;background:var(--light);border:2px solid #E5E7EB;border-radius:14px;text-align:left;cursor:pointer;font-size:14px;font-family:'Hind',sans-serif;font-weight:500;color:var(--text);transition:all 0.3s;}
+.opt-btn:hover:not(.answered){border-color:var(--saffron);background:#FFF7F0;}
+.opt-btn.correct{background:#D1FAE5;border-color:var(--success);color:#065F46;}
+.opt-btn.wrong{background:#FEE2E2;border-color:var(--danger);color:#991B1B;}
+.exp-box{background:#F0FDF4;border:1px solid #BBF7D0;border-radius:12px;padding:14px;margin-top:14px;}
+.exp-box h4{color:var(--success);font-size:12px;font-weight:700;margin-bottom:5px;}
+.exp-box p{font-size:13px;color:#065F46;}
+.next-btn{width:100%;padding:13px;background:linear-gradient(135deg,var(--blue),#4F46E5);color:#fff;border:none;border-radius:14px;font-size:15px;font-weight:700;cursor:pointer;font-family:'Baloo 2',sans-serif;margin-top:12px;}
+
+/* RESULT */
+.result-wrap{text-align:center;padding:30px 16px;}
+.result-circle{width:130px;height:130px;border-radius:50%;margin:0 auto 20px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:'Baloo 2',sans-serif;box-shadow:0 8px 30px rgba(0,0,0,0.15);}
+.result-circle.good{background:linear-gradient(135deg,var(--success),#34D399);}
+.result-circle.ok{background:linear-gradient(135deg,#F59E0B,#FCD34D);}
+.result-circle.bad{background:linear-gradient(135deg,var(--danger),#F87171);}
+.r-score{font-size:34px;font-weight:800;color:#fff;}
+.r-lbl{font-size:12px;color:rgba(255,255,255,0.85);}
+.r-title{font-family:'Baloo 2',sans-serif;font-size:22px;font-weight:800;color:var(--deep);margin-bottom:6px;}
+.r-sub{color:var(--muted);font-size:14px;margin-bottom:24px;}
+.r-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:24px;}
+.rs{background:#fff;border-radius:14px;padding:14px;box-shadow:0 2px 12px rgba(0,0,0,0.07);}
+.rv{font-family:'Baloo 2',sans-serif;font-size:20px;font-weight:800;}
+.rl{font-size:11px;color:var(--muted);}
+.rv.c{color:var(--success);}
+.rv.w{color:var(--danger);}
+.rv.s{color:var(--blue);}
+.r-btns{display:flex;gap:10px;justify-content:center;}
+.retry-btn{padding:12px 24px;background:linear-gradient(135deg,var(--saffron),#FF9A3C);color:#fff;border:none;border-radius:14px;font-size:14px;font-weight:700;cursor:pointer;font-family:'Baloo 2',sans-serif;}
+.home-btn{padding:12px 24px;background:var(--light);color:var(--blue);border:2px solid var(--blue);border-radius:14px;font-size:14px;font-weight:700;cursor:pointer;font-family:'Baloo 2',sans-serif;}
+
+/* NOTE READER */
+#noteReader{display:none;position:fixed;inset:0;background:#fff;z-index:200;overflow-y:auto;}
+.reader-nav{background:var(--deep);color:#fff;padding:14px 18px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:10;}
+.back-btn{background:rgba(255,255,255,0.1);border:none;color:#fff;padding:7px 12px;border-radius:10px;cursor:pointer;font-size:13px;}
+.reader-title{font-family:'Baloo 2',sans-serif;font-size:16px;font-weight:700;}
+.reader-body{padding:20px;max-width:700px;margin:0 auto;}
+.reader-body h2{font-family:'Baloo 2',sans-serif;font-size:20px;color:var(--deep);margin-bottom:6px;}
+.reader-body .intro{color:var(--muted);font-size:14px;margin-bottom:20px;line-height:1.7;}
+.note-sec{margin-bottom:24px;}
+.note-sec h3{font-family:'Baloo 2',sans-serif;font-size:16px;color:var(--blue);margin-bottom:10px;padding-bottom:6px;border-bottom:2px solid var(--light);}
+.note-sec p,.note-sec li{font-size:14px;line-height:1.8;color:var(--text);margin-bottom:6px;}
+.note-sec ul{padding-left:18px;}
+.hl-box{background:#FFF7F0;border-left:4px solid var(--saffron);padding:12px 14px;border-radius:0 10px 10px 0;margin:12px 0;}
+.formula-box{background:#EEF2FF;border-radius:12px;padding:14px;margin:12px 0;text-align:center;}
+.formula{font-size:17px;font-weight:700;color:var(--blue);font-family:monospace;}
+.tip-box{background:#D1FAE5;border-radius:10px;padding:12px;margin-top:14px;}
+.tip-box p{color:#065F46;font-weight:500;font-size:13px;}
+
+/* ADMIN */
+.admin-card{background:#fff;border-radius:16px;padding:18px;box-shadow:0 2px 12px rgba(0,0,0,0.07);margin-bottom:14px;}
+.admin-card h3{font-family:'Baloo 2',sans-serif;font-size:15px;font-weight:700;color:var(--deep);margin-bottom:12px;}
+.student-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--light);}
+.student-row:last-child{border-bottom:none;}
+.student-info .s-name{font-size:14px;font-weight:600;color:var(--deep);}
+.student-info .s-email{font-size:11px;color:var(--muted);}
+.s-score{background:var(--light);padding:4px 10px;border-radius:8px;font-size:12px;font-weight:700;color:var(--blue);}
+.add-content-form{display:grid;gap:10px;}
+.add-content-form input,.add-content-form textarea,.add-content-form select{width:100%;padding:11px 14px;border:2px solid #E5E7EB;border-radius:10px;font-family:'Hind',sans-serif;font-size:14px;outline:none;transition:all 0.3s;}
+.add-content-form input:focus,.add-content-form textarea:focus{border-color:var(--blue);}
+.add-content-form textarea{min-height:100px;resize:vertical;}
+.save-btn{padding:11px 20px;background:linear-gradient(135deg,var(--success),#34D399);color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;font-family:'Baloo 2',sans-serif;}
+.admin-badge{background:linear-gradient(135deg,var(--saffron),#FF9A3C);color:#fff;padding:2px 8px;border-radius:6px;font-size:10px;font-weight:700;margin-left:6px;}
+
+/* SCROLLBAR */
+::-webkit-scrollbar{width:5px;}
+::-webkit-scrollbar-track{background:#f1f1f1;}
+::-webkit-scrollbar-thumb{background:#CBD5E1;border-radius:3px;}
+
+.empty{text-align:center;padding:30px;color:var(--muted);}
+.empty .ei{font-size:40px;margin-bottom:10px;}
+</style>
+</head>
+<body>
+
+<!-- LOADING -->
+<div id="loadingScreen" class="screen active">
+  <div class="loader-logo">Notes<span>Verse</span></div>
+  <div class="loader-bar"><div class="loader-fill"></div></div>
+  <p style="color:rgba(255,255,255,0.5);font-size:13px;margin-top:8px;">Loading...</p>
+</div>
+
+<!-- LOGIN -->
+<div id="loginScreen" class="screen">
+  <div class="bg-circle bc1"></div>
+  <div class="bg-circle bc2"></div>
+  <div class="login-box">
+    <div class="login-logo">
+      <div class="logo-icon">📚</div>
+      <h1>NotesVerse</h1>
+      <p>SSC & Railway Preparation Platform</p>
+    </div>
+    <div class="tab-row">
+      <button class="tab-btn active" onclick="switchTab('login')">Login</button>
+      <button class="tab-btn" onclick="switchTab('register')">Register</button>
+    </div>
+
+    <!-- LOGIN FORM -->
+    <div id="loginForm">
+      <div class="form-group">
+        <label>📧 Email</label>
+        <input type="email" id="loginEmail" placeholder="Email address">
+      </div>
+      <div class="form-group">
+        <label>🔒 Password</label>
+        <input type="password" id="loginPass" placeholder="Password">
+      </div>
+      <button class="btn-primary" id="loginBtn" onclick="doLogin()">Login करें →</button>
+      <div class="error-msg" id="loginError"></div>
+    </div>
+
+    <!-- REGISTER FORM -->
+    <div id="registerForm" style="display:none">
+      <div class="form-group">
+        <label>👤 Full Name</label>
+        <input type="text" id="regName" placeholder="Apna naam likhein">
+      </div>
+      <div class="form-group">
+        <label>📧 Email</label>
+        <input type="email" id="regEmail" placeholder="Email address">
+      </div>
+      <div class="form-group">
+        <label>🎯 Exam Target</label>
+        <select id="regExam">
+          <option>SSC CGL</option>
+          <option>SSC CHSL</option>
+          <option>SSC MTS</option>
+          <option>Railway RRB NTPC</option>
+          <option>Railway Group D</option>
+          <option>Railway ALP</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>🔒 Password (minimum 6 characters)</label>
+        <input type="password" id="regPass" placeholder="Password banayein">
+      </div>
+      <button class="btn-primary" id="regBtn" onclick="doRegister()">Register करें →</button>
+      <div class="error-msg" id="regError"></div>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN APP -->
+<div id="appScreen" class="screen">
+  <nav class="navbar">
+    <div class="nav-logo">Notes<span>Verse</span></div>
+    <div class="nav-right">
+      <div class="user-chip" id="navUserName">Student</div>
+      <button class="logout-btn" onclick="doLogout()">Logout</button>
+    </div>
+  </nav>
+
+  <!-- DASHBOARD -->
+  <div id="dashPage" class="page active">
+    <div class="welcome-banner">
+      <h2>Namaste, <span id="welcomeName">Student</span>! 🙏</h2>
+      <p>Aaj ki preparation shuru karein</p>
+      <div class="target-badge" id="targetBadge">🎯 SSC CGL</div>
+    </div>
+    <div class="stats-grid">
+      <div class="stat-card"><div class="stat-icon">📝</div><div class="stat-val" id="statQuiz">0</div><div class="stat-lbl">Quizzes Diye</div></div>
+      <div class="stat-card"><div class="stat-icon">🏆</div><div class="stat-val" id="statScore">0%</div><div class="stat-lbl">Best Score</div></div>
+      <div class="stat-card"><div class="stat-icon">📖</div><div class="stat-val" id="statNotes">0</div><div class="stat-lbl">Notes Padhe</div></div>
+      <div class="stat-card"><div class="stat-icon">⭐</div><div class="stat-val" id="statPoints">0</div><div class="stat-lbl">Total Points</div></div>
+    </div>
+    <p class="sec-title">⚡ Quick Access</p>
+    <div class="quick-grid">
+      <div class="quick-card" onclick="goTo('quizPage')"><div class="qc-icon">📝</div><h3>Quiz Dena</h3><p>Practice karo</p></div>
+      <div class="quick-card" onclick="goTo('notesPage')"><div class="qc-icon">📖</div><h3>Notes Padho</h3><p>Chapter-wise</p></div>
+      <div class="quick-card" onclick="goTo('historyPage')"><div class="qc-icon">📊</div><h3>My Progress</h3><p>Score history</p></div>
+      <div class="quick-card" id="adminQuickCard" style="display:none" onclick="goTo('adminPage')"><div class="qc-icon">👑</div><h3>Admin Panel</h3><p>Manage content</p></div>
+    </div>
+    <div class="hl-box" style="border-radius:12px;margin-top:4px;">
+      <p>💡 <strong>Aaj ka GK:</strong> Bharat ka pehla satellite "Aryabhata" 19 April 1975 ko launch hua tha Soviet Union ki madad se.</p>
+    </div>
+  </div>
+
+  <!-- NOTES PAGE -->
+  <div id="notesPage" class="page">
+    <p class="sec-title">📖 Study Notes</p>
+    <div class="cat-tabs">
+      <button class="cat-tab active" onclick="filterNotes('all',this)">Sab</button>
+      <button class="cat-tab" onclick="filterNotes('ssc',this)">SSC</button>
+      <button class="cat-tab" onclick="filterNotes('railway',this)">Railway</button>
+      <button class="cat-tab" onclick="filterNotes('math',this)">Math</button>
+      <button class="cat-tab" onclick="filterNotes('gk',this)">GK</button>
+    </div>
+    <div class="notes-grid" id="notesGrid"></div>
+  </div>
+
+  <!-- QUIZ PAGE -->
+  <div id="quizPage" class="page">
+    <p class="sec-title">📝 Practice Tests</p>
+    <div class="cat-tabs">
+      <button class="cat-tab active" onclick="filterQuizzes('all',this)">Sab</button>
+      <button class="cat-tab" onclick="filterQuizzes('math',this)">Math</button>
+      <button class="cat-tab" onclick="filterQuizzes('reasoning',this)">Reasoning</button>
+      <button class="cat-tab" onclick="filterQuizzes('gk',this)">GK</button>
+    </div>
+    <div id="quizList"></div>
+  </div>
+
+  <!-- HISTORY PAGE -->
+  <div id="historyPage" class="page">
+    <p class="sec-title">📊 Meri Progress</p>
+    <div id="historyList"></div>
+  </div>
+
+  <!-- ADMIN PAGE -->
+  <div id="adminPage" class="page">
+    <p class="sec-title">👑 Admin Panel <span class="admin-badge">ADMIN</span></p>
+
+    <!-- Stats -->
+    <div class="stats-grid" style="margin-bottom:16px;">
+      <div class="stat-card"><div class="stat-icon">👥</div><div class="stat-val" id="adminStudents">0</div><div class="stat-lbl">Total Students</div></div>
+      <div class="stat-card"><div class="stat-icon">📝</div><div class="stat-val" id="adminQuizzes">0</div><div class="stat-lbl">Total Quizzes</div></div>
+    </div>
+
+    <!-- Add Note -->
+    <div class="admin-card">
+      <h3>➕ Naya Note Add Karo</h3>
+      <div class="add-content-form">
+        <input type="text" id="noteTitle" placeholder="Note ka title">
+        <select id="noteCategory">
+          <option value="math">Math</option>
+          <option value="gk">GK / History</option>
+          <option value="reasoning">Reasoning</option>
+          <option value="english">English</option>
+          <option value="railway">Railway GK</option>
+          <option value="hindi">Hindi</option>
+        </select>
+        <select id="noteExam">
+          <option value="ssc">SSC</option>
+          <option value="railway">Railway</option>
+          <option value="both">Dono</option>
+        </select>
+        <textarea id="noteContent" placeholder="Note ka content yahan likhein..."></textarea>
+        <button class="save-btn" onclick="addNote()">✅ Note Save Karo</button>
+      </div>
+    </div>
+
+    <!-- Add Quiz -->
+    <div class="admin-card">
+      <h3>➕ Naya Quiz Add Karo</h3>
+      <div class="add-content-form">
+        <input type="text" id="quizTitle" placeholder="Quiz ka title">
+        <select id="quizCat">
+          <option value="math">Math</option>
+          <option value="gk">GK</option>
+          <option value="reasoning">Reasoning</option>
+          <option value="english">English</option>
+        </select>
+        <select id="quizDiff">
+          <option value="Easy">Easy</option>
+          <option value="Medium">Medium</option>
+          <option value="Hard">Hard</option>
+        </select>
+        <p style="font-size:12px;color:var(--muted);margin-top:4px;">📌 Questions JSON format mein likhein:</p>
+        <textarea id="quizQuestions" placeholder='[{"q":"Sawaal?","opts":["A","B","C","D"],"ans":0,"exp":"Explanation"}]' style="min-height:140px;font-size:12px;font-family:monospace;"></textarea>
+        <button class="save-btn" onclick="addQuiz()">✅ Quiz Save Karo</button>
+      </div>
+    </div>
+
+    <!-- Students List -->
+    <div class="admin-card">
+      <h3>👥 Registered Students</h3>
+      <div id="studentsList"><div class="empty"><div class="ei">👥</div><p>Loading...</p></div></div>
+    </div>
+  </div>
+
+  <div class="bottom-nav">
+    <div class="nav-item active" onclick="goTo('dashPage')" id="nav-dash"><div class="nav-icon">🏠</div><span class="nav-label">Home</span></div>
+    <div class="nav-item" onclick="goTo('notesPage')" id="nav-notes"><div class="nav-icon">📖</div><span class="nav-label">Notes</span></div>
+    <div class="nav-item" onclick="goTo('quizPage')" id="nav-quiz"><div class="nav-icon">📝</div><span class="nav-label">Quiz</span></div>
+    <div class="nav-item" onclick="goTo('historyPage')" id="nav-history"><div class="nav-icon">📊</div><span class="nav-label">Progress</span></div>
+    <div class="nav-item" onclick="goTo('adminPage')" id="nav-admin" style="display:none"><div class="nav-icon">👑</div><span class="nav-label">Admin</span></div>
+  </div>
+</div>
+
+<!-- QUIZ ACTIVE -->
+<div id="quizActive">
+  <div style="max-width:700px;margin:0 auto;">
+    <div class="quiz-hdr">
+      <div><div class="q-info" id="qInfo">Q 1/10</div><div class="q-pbar"><div class="q-pfill" id="qPfill" style="width:10%"></div></div></div>
+      <div class="q-timer" id="qTimer">⏱ 30s</div>
+    </div>
+    <div class="q-card">
+      <div class="q-num" id="qNum">Question 1</div>
+      <div class="q-text" id="qText"></div>
+      <div class="opts" id="opts"></div>
+      <div id="expBox" style="display:none" class="exp-box"><h4>✅ Explanation</h4><p id="expText"></p></div>
+    </div>
+    <button class="next-btn" id="nextBtn" onclick="nextQ()" style="display:none">Agla Sawaal →</button>
+    <button class="next-btn" id="submitBtn" onclick="submitQuiz()" style="display:none;background:linear-gradient(135deg,var(--success),#34D399)">Quiz Submit ✓</button>
+  </div>
+</div>
+
+<!-- NOTE READER -->
+<div id="noteReader">
+  <div class="reader-nav">
+    <button class="back-btn" onclick="closeReader()">← Wapas</button>
+    <div class="reader-title" id="readerTitle">Note</div>
+  </div>
+  <div class="reader-body" id="readerBody"></div>
+</div>
+
+<!-- FIREBASE -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-app.js";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-auth.js";
+import { getFirestore, doc, setDoc, getDoc, collection, addDoc, getDocs, query, orderBy, updateDoc, increment } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyB9fxf1D_30gKT6JuBtas1PHHpcBRlDNRQ",
+  authDomain: "notesverse-da966.firebaseapp.com",
+  projectId: "notesverse-da966",
+  storageBucket: "notesverse-da966.firebasestorage.app",
+  messagingSenderId: "1022337274507",
+  appId: "1:1022337274507:web:d4b37251f0d396fa4a3a8e"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+// ADMIN EMAIL — Yahan apna email daalo
+const ADMIN_EMAIL = "admin@notesverse.in";
+
+// Default Notes Data
+const defaultNotes = [
+  { title:"Profit & Loss — Complete Notes", category:"math", exam:"ssc", icon:"➗",
+    content:`<h2>Profit & Loss — Poori Jaankari</h2><p class="intro">SSC aur Railway exams mein Profit & Loss se 3-4 sawaal aate hain.</p><div class="note-sec"><h3>📌 Basic Formulas</h3><div class="formula-box"><div class="formula">Profit% = (Profit/CP) × 100</div></div><div class="formula-box"><div class="formula">SP = CP × (100 + P%) / 100</div></div></div><div class="note-sec"><h3>💡 Important Trick</h3><div class="hl-box"><p>🔑 Agar 20% Profit par 20% Loss ho → Overall Loss = 4%</p></div></div><div class="tip-box"><p>✅ SSC Tip: Dishonest dealer wale sawaalon mein weight fraud hota hai!</p></div>` },
+  { title:"Indian History — Key Points", category:"gk", exam:"ssc", icon:"🏛️",
+    content:`<h2>Indian History — Important Points</h2><p class="intro">SSC CGL aur Railway NTPC mein History se 4-5 sawaal aate hain.</p><div class="note-sec"><h3>🏹 Ancient India</h3><ul><li><strong>Maurya Dynasty:</strong> Chandragupta Maurya ne sthapana ki (322 BC)</li><li><strong>Ashoka:</strong> Kalinga Yudh 261 BC</li><li><strong>Gupta Period:</strong> "Golden Age of India"</li></ul></div><div class="note-sec"><h3>🇮🇳 Freedom Struggle</h3><ul><li>1857 — Pratham Swatantrata Sangram</li><li>1930 — Dandi March</li><li>1942 — Quit India Movement</li><li>15 August 1947 — Swatantrata</li></ul></div><div class="tip-box"><p>✅ Railway Tip: Governors-General list zaroor yaad karo!</p></div>` },
+  { title:"Railway — Important Facts", category:"gk", exam:"railway", icon:"🚂",
+    content:`<h2>Indian Railways — Important Facts</h2><p class="intro">Railway exams mein Railways ke facts pooche jaate hain.</p><div class="note-sec"><h3>🚂 Basic Facts</h3><ul><li>Sthapana: <strong>16 April 1853</strong></li><li>Total Zones: <strong>18</strong></li><li>Headquarter: <strong>New Delhi</strong></li></ul></div><div class="note-sec"><h3>🚦 Signals</h3><ul><li><strong>Green</strong> — Line clear</li><li><strong>Yellow</strong> — Caution</li><li><strong>Red</strong> — Stop</li></ul></div><div class="tip-box"><p>✅ Tip: Vande Bharat Express India ki sabse tez train hai!</p></div>` },
+  { title:"Reasoning — Coding Decoding", category:"reasoning", exam:"ssc", icon:"🧠",
+    content:`<h2>Coding-Decoding — Complete Guide</h2><p class="intro">SSC aur Railway mein Coding-Decoding se 2-3 sawaal pakke aate hain.</p><div class="note-sec"><h3>📌 Types</h3><ul><li><strong>Letter Coding:</strong> A=1, B=2...</li><li><strong>Number Coding:</strong> Words ko numbers mein</li><li><strong>Mixed Coding:</strong> Letter + Number</li></ul></div><div class="note-sec"><h3>💡 Trick</h3><div class="hl-box"><p>🔑 MANGO → NBOHI matlab har letter mein +1 add kiya</p></div></div><div class="tip-box"><p>✅ Tip: Pehle pattern dhundho, phir apply karo!</p></div>` }
+];
+
+const defaultQuizzes = [
+  { title:"SSC Math — Profit & Loss", category:"math", difficulty:"Medium",
+    questions:[
+      {q:"Ek dukandaar ne Rs. 800 mein kharida aur Rs. 1000 mein becha. Profit% kya hai?",opts:["20%","25%","30%","15%"],ans:1,exp:"Profit=200, P%=(200/800)×100=25%"},
+      {q:"SP=Rs.480, Loss%=20%. CP kya hoga?",opts:["Rs.560","Rs.600","Rs.640","Rs.580"],ans:1,exp:"CP=480×100/80=Rs.600"},
+      {q:"15% profit par Rs.1150 milte hain. CP kya hai?",opts:["Rs.900","Rs.1000","Rs.950","Rs.1100"],ans:1,exp:"CP=1150×100/115=Rs.1000"},
+      {q:"CP aur SP ka ratio 5:6 hai. Profit% kya hai?",opts:["15%","18%","20%","25%"],ans:2,exp:"P%=(6-5)/5×100=20%"},
+      {q:"Ek item 10% profit pe becha. Agar CP Rs.500 ho toh SP kya?",opts:["Rs.540","Rs.550","Rs.560","Rs.600"],ans:1,exp:"SP=500×110/100=Rs.550"}
+    ]},
+  { title:"Railway GK — Indian Railways", category:"gk", difficulty:"Easy",
+    questions:[
+      {q:"Indian Railways ki sthapana kab hui?",opts:["1853","1857","1861","1869"],ans:0,exp:"16 April 1853 ko pehli train Mumbai se Thane tak chali."},
+      {q:"Indian Railways mein kitne zones hain?",opts:["14","16","18","20"],ans:2,exp:"Filhaal 18 zones hain."},
+      {q:"India ki pehli Electric Train kab chali?",opts:["1925","1930","1935","1947"],ans:0,exp:"3 February 1925 ko Bombay Victoria Terminus se Kurla tak."},
+      {q:"Konsi train India mein sabse tez hai?",opts:["Rajdhani","Shatabdi","Vande Bharat","Duronto"],ans:2,exp:"Vande Bharat Express — 180 kmph design speed."},
+      {q:"Railway Board ka headquarter kahan hai?",opts:["Mumbai","Kolkata","New Delhi","Chennai"],ans:2,exp:"New Delhi mein hai."}
+    ]},
+  { title:"Reasoning — Coding Decoding", category:"reasoning", difficulty:"Medium",
+    questions:[
+      {q:"MANGO ko NBOHI likha jaye toh APPLE = ?",opts:["BQQMF","CQQNG","BQQMG","BQPMF"],ans:0,exp:"Har letter mein +1: A→B, P→Q, P→Q, L→M, E→F = BQQMF"},
+      {q:"Agar BOOK=2,15,15,11 toh CAT=?",opts:["3,1,20","4,2,21","2,1,19","3,2,20"],ans:0,exp:"A=1,B=2...Z=26 standard coding: C=3,A=1,T=20"},
+      {q:"Reasoning mein 'Analogy' ka matlab kya hai?",opts:["Ulta karna","Sambandhit jodi banana","Numbers todna","Letters badalna"],ans:1,exp:"Do words ka sambandh dekh kar wohi sambandh doosri jodi mein dhundna."},
+      {q:"Agar NORTH=56782, toh SOUTH = ?",opts:["34512","56123","13452","56234"],ans:0,exp:"Code mapping karke: S=3,O=4,U=5,T=1,H=2 → 34512"},
+      {q:"Series: 2,4,8,16,? kya aayega?",opts:["24","28","32","30"],ans:2,exp:"Har baar 2 se multiply: 16×2=32"}
+    ]}
+];
+
+// STATE
+let currentUser = null;
+let currentUserData = null;
+let isAdmin = false;
+let allNotes = [];
+let allQuizzes = [];
+let currentQuiz = null;
+let currentQ = 0;
+let correct = 0;
+let wrong = 0;
+let score = 0;
+let answered = false;
+let timer = null;
+let timeLeft = 30;
+
+// EXPOSE TO WINDOW
+window.switchTab = switchTab;
+window.doLogin = doLogin;
+window.doRegister = doRegister;
+window.doLogout = doLogout;
+window.goTo = goTo;
+window.filterNotes = filterNotes;
+window.filterQuizzes = filterQuizzes;
+window.openNote = openNote;
+window.closeReader = closeReader;
+window.startQuiz = startQuiz;
+window.nextQ = nextQ;
+window.submitQuiz = submitQuiz;
+window.addNote = addNote;
+window.addQuiz = addQuiz;
+window.retryQuiz = retryQuiz;
+window.backHome = backHome;
+
+// AUTH STATE
+onAuthStateChanged(auth, async (user) => {
+  if (user) {
+    currentUser = user;
+    isAdmin = user.email === ADMIN_EMAIL;
+    await loadUserData(user.uid);
+    await loadContent();
+    showApp();
+  } else {
+    currentUser = null;
+    showLogin();
+  }
+});
+
+async function loadUserData(uid) {
+  const docRef = doc(db, "users", uid);
+  const snap = await getDoc(docRef);
+  if (snap.exists()) {
+    currentUserData = snap.data();
+  }
+}
+
+async function loadContent() {
+  // Load notes
+  allNotes = [];
+  const notesSnap = await getDocs(collection(db, "notes"));
+  notesSnap.forEach(d => allNotes.push({ id: d.id, ...d.data() }));
+  if (allNotes.length === 0) {
+    for (const note of defaultNotes) {
+      const ref = await addDoc(collection(db, "notes"), { ...note, createdAt: new Date().toISOString() });
+      allNotes.push({ id: ref.id, ...note });
+    }
+  }
+
+  // Load quizzes
+  allQuizzes = [];
+  const quizSnap = await getDocs(collection(db, "quizzes"));
+  quizSnap.forEach(d => allQuizzes.push({ id: d.id, ...d.data() }));
+  if (allQuizzes.length === 0) {
+    for (const quiz of defaultQuizzes) {
+      const ref = await addDoc(collection(db, "quizzes"), { ...quiz, createdAt: new Date().toISOString() });
+      allQuizzes.push({ id: ref.id, ...quiz });
+    }
+  }
+}
+
+// AUTH FUNCTIONS
+function switchTab(tab) {
+  document.getElementById('loginForm').style.display = tab === 'login' ? 'block' : 'none';
+  document.getElementById('registerForm').style.display = tab === 'register' ? 'block' : 'none';
+  document.querySelectorAll('.tab-btn').forEach((b, i) => b.classList.toggle('active', i === (tab === 'login' ? 0 : 1)));
+}
+
+async function doLogin() {
+  const email = document.getElementById('loginEmail').value.trim();
+  const pass = document.getElementById('loginPass').value;
+  const btn = document.getElementById('loginBtn');
+  const err = document.getElementById('loginError');
+  if (!email || !pass) { showError(err, 'Email aur password zaroor bharein'); return; }
+  btn.disabled = true; btn.textContent = 'Login ho raha hai...';
+  try {
+    await signInWithEmailAndPassword(auth, email, pass);
+  } catch (e) {
+    btn.disabled = false; btn.textContent = 'Login करें →';
+    const msgs = { 'auth/invalid-credential': 'Email ya password galat hai', 'auth/user-not-found': 'Account nahi mila', 'auth/wrong-password': 'Password galat hai', 'auth/too-many-requests': 'Bahut zyada attempts — thodi der baad try karo' };
+    showError(err, msgs[e.code] || 'Login failed: ' + e.message);
+  }
+}
+
+async function doRegister() {
+  const name = document.getElementById('regName').value.trim();
+  const email = document.getElementById('regEmail').value.trim();
+  const exam = document.getElementById('regExam').value;
+  const pass = document.getElementById('regPass').value;
+  const btn = document.getElementById('regBtn');
+  const err = document.getElementById('regError');
+  if (!name || !email || !pass) { showError(err, 'Sab fields bharein'); return; }
+  if (pass.length < 6) { showError(err, 'Password kam se kam 6 characters ka hona chahiye'); return; }
+  btn.disabled = true; btn.textContent = 'Register ho raha hai...';
+  try {
+    const cred = await createUserWithEmailAndPassword(auth, email, pass);
+    await setDoc(doc(db, "users", cred.user.uid), {
+      name, email, exam, uid: cred.user.uid,
+      quizCount: 0, bestScore: 0, notesRead: 0, totalPoints: 0,
+      joinedAt: new Date().toISOString()
+    });
+  } catch (e) {
+    btn.disabled = false; btn.textContent = 'Register करें →';
+    const msgs = { 'auth/email-already-in-use': 'Yeh email already registered hai', 'auth/invalid-email': 'Email format galat hai', 'auth/weak-password': 'Password zyada strong banana hoga' };
+    showError(err, msgs[e.code] || 'Registration failed: ' + e.message);
+  }
+}
+
+async function doLogout() {
+  await signOut(auth);
+}
+
+function showError(el, msg) { el.textContent = msg; el.classList.add('show'); setTimeout(() => el.classList.remove('show'), 4000); }
+
+// SHOW/HIDE SCREENS
+function showApp() {
+  document.getElementById('loadingScreen').classList.remove('active');
+  document.getElementById('loginScreen').classList.remove('active');
+  document.getElementById('appScreen').classList.add('active');
+  const name = currentUserData?.name || currentUser.email.split('@')[0];
+  document.getElementById('navUserName').textContent = name;
+  document.getElementById('welcomeName').textContent = name;
+  document.getElementById('targetBadge').textContent = '🎯 ' + (currentUserData?.exam || 'SSC CGL');
+  document.getElementById('statQuiz').textContent = currentUserData?.quizCount || 0;
+  document.getElementById('statScore').textContent = (currentUserData?.bestScore || 0) + '%';
+  document.getElementById('statNotes').textContent = currentUserData?.notesRead || 0;
+  document.getElementById('statPoints').textContent = currentUserData?.totalPoints || 0;
+  if (isAdmin) {
+    document.getElementById('adminQuickCard').style.display = 'block';
+    document.getElementById('nav-admin').style.display = 'flex';
+    loadAdminData();
+  }
+  renderNotes('all');
+  renderQuizzes('all');
+  renderHistory();
+}
+
+function showLogin() {
+  document.getElementById('loadingScreen').classList.remove('active');
+  document.getElementById('appScreen').classList.remove('active');
+  document.getElementById('loginScreen').classList.add('active');
+}
+
+// NAVIGATION
+function goTo(pageId) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById(pageId)?.classList.add('active');
+  const map = { dashPage: 'nav-dash', notesPage: 'nav-notes', quizPage: 'nav-quiz', historyPage: 'nav-history', adminPage: 'nav-admin' };
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  if (map[pageId]) document.getElementById(map[pageId])?.classList.add('active');
+  if (pageId === 'adminPage') loadAdminData();
+}
+
+// NOTES
+function renderNotes(filter) {
+  const grid = document.getElementById('notesGrid');
+  const filtered = filter === 'all' ? allNotes : allNotes.filter(n => n.category === filter || n.exam === filter);
+  if (!filtered.length) { grid.innerHTML = '<div class="empty"><div class="ei">📭</div><p>Koi notes nahi</p></div>'; return; }
+  grid.innerHTML = filtered.map(note => `
+    <div class="note-card">
+      <div class="note-header">
+        <div class="note-icon">${note.icon || '📄'}</div>
+        <div class="note-meta"><h3>${note.title}</h3><p>${note.category} • ${note.exam}</p></div>
+      </div>
+      <div class="tags-row"><span class="tag ${note.exam}">${note.exam?.toUpperCase()}</span><span class="tag">${note.category}</span></div>
+      <button class="read-btn" onclick="openNote('${note.id}')">📖 Padho →</button>
+    </div>`).join('');
+}
+
+function filterNotes(filter, btn) {
+  document.querySelectorAll('#notesPage .cat-tab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderNotes(filter);
+}
+
+async function openNote(id) {
+  const note = allNotes.find(n => n.id === id);
+  if (!note) return;
+  document.getElementById('readerTitle').textContent = note.title;
+  document.getElementById('readerBody').innerHTML = note.content;
+  document.getElementById('noteReader').style.display = 'block';
+  // Update stats
+  if (currentUser) {
+    await updateDoc(doc(db, "users", currentUser.uid), { notesRead: increment(1) });
+    currentUserData.notesRead = (currentUserData.notesRead || 0) + 1;
+    document.getElementById('statNotes').textContent = currentUserData.notesRead;
+  }
+}
+
+function closeReader() { document.getElementById('noteReader').style.display = 'none'; }
+
+// QUIZZES
+function renderQuizzes(filter) {
+  const list = document.getElementById('quizList');
+  const filtered = filter === 'all' ? allQuizzes : allQuizzes.filter(q => q.category === filter);
+  if (!filtered.length) { list.innerHTML = '<div class="empty"><div class="ei">📭</div><p>Koi quiz nahi</p></div>'; return; }
+  list.innerHTML = filtered.map(quiz => `
+    <div class="quiz-card">
+      <div class="quiz-top">
+        <div class="quiz-title">${quiz.title}</div>
+        <span class="diff diff-${quiz.difficulty?.toLowerCase()}">${quiz.difficulty}</span>
+      </div>
+      <div class="quiz-info"><span>📝 ${quiz.questions?.length || 0} Sawaal</span><span>⏱ 30s/sawaal</span></div>
+      <button class="start-btn" onclick="startQuiz('${quiz.id}')">🚀 Start Quiz</button>
+    </div>`).join('');
+}
+
+function filterQuizzes(filter, btn) {
+  document.querySelectorAll('#quizPage .cat-tab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderQuizzes(filter);
+}
+
+// QUIZ ACTIVE
+function startQuiz(id) {
+  currentQuiz = allQuizzes.find(q => q.id === id);
+  if (!currentQuiz) return;
+  currentQ = 0; correct = 0; wrong = 0; score = 0;
+  document.getElementById('quizActive').style.display = 'block';
+  showQuestion();
+}
+
+function showQuestion() {
+  answered = false;
+  clearInterval(timer);
+  const q = currentQuiz.questions[currentQ];
+  const total = currentQuiz.questions.length;
+  document.getElementById('qInfo').textContent = `Q ${currentQ + 1}/${total}`;
+  document.getElementById('qPfill').style.width = `${((currentQ + 1) / total) * 100}%`;
+  document.getElementById('qNum').textContent = `Question ${currentQ + 1}`;
+  document.getElementById('qText').textContent = q.q;
+  document.getElementById('expBox').style.display = 'none';
+  document.getElementById('nextBtn').style.display = 'none';
+  document.getElementById('submitBtn').style.display = 'none';
+  document.getElementById('opts').innerHTML = q.opts.map((opt, i) =>
+    `<button class="opt-btn" onclick="selectAns(${i})">${String.fromCharCode(65 + i)}. ${opt}</button>`).join('');
+  timeLeft = 30;
+  document.getElementById('qTimer').textContent = `⏱ ${timeLeft}s`;
+  timer = setInterval(() => {
+    timeLeft--;
+    document.getElementById('qTimer').textContent = `⏱ ${timeLeft}s`;
+    if (timeLeft <= 0) { clearInterval(timer); if (!answered) autoExpire(); }
+  }, 1000);
+}
+
+window.selectAns = function(idx) {
+  if (answered) return;
+  answered = true; clearInterval(timer);
+  const q = currentQuiz.questions[currentQ];
+  const btns = document.querySelectorAll('.opt-btn');
+  btns.forEach(b => b.classList.add('answered'));
+  btns[q.ans].classList.add('correct');
+  if (idx !== q.ans) { btns[idx].classList.add('wrong'); wrong++; }
+  else { correct++; score += 10; }
+  document.getElementById('expText').textContent = q.exp;
+  document.getElementById('expBox').style.display = 'block';
+  const isLast = currentQ >= currentQuiz.questions.length - 1;
+  document.getElementById(isLast ? 'submitBtn' : 'nextBtn').style.display = 'block';
+};
+
+function autoExpire() {
+  answered = true; wrong++;
+  const q = currentQuiz.questions[currentQ];
+  document.querySelectorAll('.opt-btn').forEach(b => b.classList.add('answered'));
+  document.querySelectorAll('.opt-btn')[q.ans].classList.add('correct');
+  document.getElementById('expText').textContent = '⏰ Time out! ' + q.exp;
+  document.getElementById('expBox').style.display = 'block';
+  const isLast = currentQ >= currentQuiz.questions.length - 1;
+  document.getElementById(isLast ? 'submitBtn' : 'nextBtn').style.display = 'block';
+}
+
+function nextQ() { currentQ++; showQuestion(); }
+
+async function submitQuiz() {
+  clearInterval(timer);
+  document.getElementById('quizActive').style.display = 'none';
+  const total = currentQuiz.questions.length;
+  const pct = Math.round((correct / total) * 100);
+  // Save to Firebase
+  if (currentUser) {
+    await addDoc(collection(db, "users", currentUser.uid, "results"), {
+      quizTitle: currentQuiz.title, correct, wrong, score, pct,
+      total, date: new Date().toISOString()
+    });
+    const bestScore = Math.max(currentUserData?.bestScore || 0, pct);
+    await updateDoc(doc(db, "users", currentUser.uid), {
+      quizCount: increment(1), bestScore, totalPoints: increment(score)
+    });
+    currentUserData.quizCount = (currentUserData.quizCount || 0) + 1;
+    currentUserData.bestScore = bestScore;
+    currentUserData.totalPoints = (currentUserData.totalPoints || 0) + score;
+    document.getElementById('statQuiz').textContent = currentUserData.quizCount;
+    document.getElementById('statScore').textContent = bestScore + '%';
+    document.getElementById('statPoints').textContent = currentUserData.totalPoints;
+  }
+  showResult(pct, total);
+}
+
+function showResult(pct, total) {
+  const grade = pct >= 70 ? 'good' : pct >= 40 ? 'ok' : 'bad';
+  const msg = pct >= 70 ? '🏆 Bahut badiya!' : pct >= 40 ? '📈 Acha kiya!' : '💪 Aur mehnat karo!';
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  const el = document.createElement('div');
+  el.className = 'page active'; el.id = 'resultPage';
+  el.innerHTML = `<div class="result-wrap">
+    <div class="result-circle ${grade}"><div class="r-score">${pct}%</div><div class="r-lbl">Score</div></div>
+    <div class="r-title">${msg}</div><div class="r-sub">${currentQuiz.title}</div>
+    <div class="r-stats">
+      <div class="rs"><div class="rv c">${correct}</div><div class="rl">✅ Sahi</div></div>
+      <div class="rs"><div class="rv w">${wrong}</div><div class="rl">❌ Galat</div></div>
+      <div class="rs"><div class="rv s">${score}</div><div class="rl">⭐ Points</div></div>
+    </div>
+    <div class="r-btns"><button class="retry-btn" onclick="retryQuiz()">🔄 Dobara</button><button class="home-btn" onclick="backHome()">🏠 Home</button></div>
+  </div>`;
+  document.getElementById('appScreen').insertBefore(el, document.querySelector('.bottom-nav'));
+  renderHistory();
+}
+
+function retryQuiz() { document.getElementById('resultPage')?.remove(); startQuiz(currentQuiz.id); }
+function backHome() { document.getElementById('resultPage')?.remove(); goTo('dashPage'); }
+
+// HISTORY
+async function renderHistory() {
+  const list = document.getElementById('historyList');
+  if (!currentUser) return;
+  try {
+    const snap = await getDocs(query(collection(db, "users", currentUser.uid, "results"), orderBy("date", "desc")));
+    if (snap.empty) { list.innerHTML = '<div class="empty"><div class="ei">📊</div><p>Abhi koi quiz nahi diya</p></div>'; return; }
+    list.innerHTML = snap.docs.map(d => {
+      const r = d.data();
+      const date = new Date(r.date).toLocaleDateString('hi-IN');
+      const grade = r.pct >= 70 ? '#10B981' : r.pct >= 40 ? '#F59E0B' : '#EF4444';
+      return `<div class="quiz-card" style="margin-bottom:10px;">
+        <div class="quiz-top"><div class="quiz-title">${r.quizTitle}</div><span style="color:${grade};font-weight:800;font-size:16px;">${r.pct}%</span></div>
+        <div class="quiz-info"><span>✅ ${r.correct} Sahi</span><span>❌ ${r.wrong} Galat</span><span>⭐ ${r.score} Points</span><span>📅 ${date}</span></div>
+      </div>`;
+    }).join('');
+  } catch (e) { list.innerHTML = '<div class="empty"><div class="ei">⚠️</div><p>Data load nahi hua</p></div>'; }
+}
+
+// ADMIN
+async function loadAdminData() {
+  // Student count
+  const usersSnap = await getDocs(collection(db, "users"));
+  document.getElementById('adminStudents').textContent = usersSnap.size;
+  document.getElementById('adminQuizzes').textContent = allQuizzes.length;
+  // Students list
+  const list = document.getElementById('studentsList');
+  if (usersSnap.empty) { list.innerHTML = '<div class="empty"><p>Koi student nahi</p></div>'; return; }
+  list.innerHTML = usersSnap.docs.map(d => {
+    const u = d.data();
+    return `<div class="student-row">
+      <div class="student-info"><div class="s-name">${u.name || 'Unknown'}</div><div class="s-email">${u.email} • ${u.exam || ''}</div></div>
+      <div class="s-score">🏆 ${u.bestScore || 0}%</div>
+    </div>`;
+  }).join('');
+}
+
+async function addNote() {
+  const title = document.getElementById('noteTitle').value.trim();
+  const category = document.getElementById('noteCategory').value;
+  const exam = document.getElementById('noteExam').value;
+  const content = document.getElementById('noteContent').value.trim();
+  if (!title || !content) { alert('Title aur content zaroor bharein!'); return; }
+  const noteData = { title, category, exam, content, icon: '📄', createdAt: new Date().toISOString() };
+  const ref = await addDoc(collection(db, "notes"), noteData);
+  allNotes.push({ id: ref.id, ...noteData });
+  document.getElementById('noteTitle').value = '';
+  document.getElementById('noteContent').value = '';
+  alert('✅ Note save ho gaya!');
+  renderNotes('all');
+}
+
+async function addQuiz() {
+  const title = document.getElementById('quizTitle').value.trim();
+  const category = document.getElementById('quizCat').value;
+  const difficulty = document.getElementById('quizDiff').value;
+  const questionsRaw = document.getElementById('quizQuestions').value.trim();
+  if (!title || !questionsRaw) { alert('Title aur questions zaroor bharein!'); return; }
+  let questions;
+  try { questions = JSON.parse(questionsRaw); }
+  catch (e) { alert('Questions ka format galat hai! JSON check karo.'); return; }
+  const quizData = { title, category, difficulty, questions, createdAt: new Date().toISOString() };
+  const ref = await addDoc(collection(db, "quizzes"), quizData);
+  allQuizzes.push({ id: ref.id, ...quizData });
+  document.getElementById('quizTitle').value = '';
+  document.getElementById('quizQuestions').value = '';
+  alert('✅ Quiz save ho gaya!');
+  renderQuizzes('all');
+  document.getElementById('adminQuizzes').textContent = allQuizzes.length;
+}
+</script>
+</body>
+</html>
