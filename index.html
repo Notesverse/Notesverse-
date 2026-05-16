@@ -1,0 +1,1356 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NotesVerse — SSC | Railway | State Exams</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700;800&family=Hind:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --saffron:#FF6B00;--saffron2:#FF9A3C;--deep:#07090F;--navy:#0B1437;
+  --blue:#1847CC;--blue2:#2563EB;--accent:#00D4AA;--gold:#FFD700;
+  --purple:#7C3AED;--pink:#EC4899;--red:#EF4444;--green:#10B981;
+  --light:#F0F4FF;--card:#FFFFFF;--text:#1A1D2E;--muted:#64748B;
+  --border:#E2E8F0;--success:#10B981;--danger:#EF4444;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:'Hind',sans-serif;background:var(--light);color:var(--text);overflow-x:hidden;}
+
+/* ===== LOADING ===== */
+#loadingScreen{position:fixed;inset:0;background:var(--deep);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;}
+.load-logo{font-family:'Baloo 2',sans-serif;font-size:40px;font-weight:800;color:#fff;letter-spacing:-1px;}
+.load-logo span{color:var(--saffron);}
+.load-sub{color:rgba(255,255,255,0.4);font-size:13px;letter-spacing:3px;text-transform:uppercase;}
+.load-dots{display:flex;gap:8px;}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--saffron);animation:bounce 1.2s ease-in-out infinite;}
+.dot:nth-child(2){animation-delay:0.2s;background:var(--gold);}
+.dot:nth-child(3){animation-delay:0.4s;background:var(--accent);}
+@keyframes bounce{0%,100%{transform:translateY(0);opacity:0.4}50%{transform:translateY(-10px);opacity:1}}
+
+/* ===== LOGIN ===== */
+#loginScreen{display:none;min-height:100vh;background:var(--deep);position:relative;overflow:hidden;align-items:center;justify-content:center;}
+#loginScreen.active{display:flex;}
+.login-bg{position:absolute;inset:0;overflow:hidden;}
+.bg-grad{position:absolute;border-radius:50%;filter:blur(80px);opacity:0.12;}
+.bg-grad.g1{width:500px;height:500px;background:var(--saffron);top:-150px;right:-100px;}
+.bg-grad.g2{width:400px;height:400px;background:var(--blue);bottom:-100px;left:-100px;}
+.bg-grad.g3{width:300px;height:300px;background:var(--accent);top:30%;left:20%;}
+.grid-pattern{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.03) 1px,transparent 1px);background-size:40px 40px;}
+.login-wrap{position:relative;z-index:2;width:100%;max-width:440px;padding:20px;}
+.brand-mark{text-align:center;margin-bottom:32px;}
+.brand-icon{width:68px;height:68px;background:linear-gradient(135deg,var(--saffron),var(--gold));border-radius:20px;display:flex;align-items:center;justify-content:center;font-size:32px;margin:0 auto 14px;box-shadow:0 12px 32px rgba(255,107,0,0.4);transform:rotate(-5deg);}
+.brand-mark h1{font-family:'Baloo 2',sans-serif;font-size:30px;font-weight:800;color:#fff;letter-spacing:-0.5px;}
+.brand-mark h1 span{color:var(--saffron);}
+.brand-mark p{color:rgba(255,255,255,0.45);font-size:13px;margin-top:4px;}
+.login-card{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);backdrop-filter:blur(20px);border-radius:24px;padding:32px 28px;}
+.tab-switch{display:flex;background:rgba(255,255,255,0.06);border-radius:12px;padding:4px;gap:4px;margin-bottom:24px;}
+.tsw{flex:1;padding:9px;border:none;background:transparent;color:rgba(255,255,255,0.5);font-family:'Baloo 2',sans-serif;font-size:14px;font-weight:600;border-radius:9px;cursor:pointer;transition:all 0.3s;}
+.tsw.on{background:var(--saffron);color:#fff;box-shadow:0 4px 14px rgba(255,107,0,0.4);}
+.fg{margin-bottom:14px;}
+.fg label{display:block;color:rgba(255,255,255,0.6);font-size:12px;font-weight:600;margin-bottom:6px;letter-spacing:0.5px;text-transform:uppercase;}
+.fg input,.fg select{width:100%;padding:12px 15px;background:rgba(255,255,255,0.08);border:1.5px solid rgba(255,255,255,0.15);border-radius:12px;color:#fff;font-family:'Hind',sans-serif;font-size:14px;outline:none;transition:all 0.3s;}
+.fg input::placeholder{color:rgba(255,255,255,0.25);}
+.fg input:focus,.fg select:focus{border-color:var(--saffron);background:rgba(255,255,255,0.12);}
+.fg select option{color:#000;}
+.btn-go{width:100%;padding:14px;background:linear-gradient(135deg,var(--saffron),var(--saffron2));border:none;border-radius:12px;color:#fff;font-family:'Baloo 2',sans-serif;font-size:16px;font-weight:700;cursor:pointer;margin-top:8px;box-shadow:0 8px 24px rgba(255,107,0,0.35);transition:all 0.3s;letter-spacing:0.3px;}
+.btn-go:hover{transform:translateY(-2px);box-shadow:0 12px 30px rgba(255,107,0,0.45);}
+.btn-go:disabled{opacity:0.6;cursor:not-allowed;transform:none;}
+.errmsg{background:rgba(239,68,68,0.15);border:1px solid rgba(239,68,68,0.3);color:#FCA5A5;padding:10px 14px;border-radius:10px;font-size:12px;margin-top:12px;display:none;}
+.errmsg.show{display:block;}
+
+/* ===== APP ===== */
+#appScreen{display:none;min-height:100vh;padding-bottom:70px;}
+#appScreen.active{display:block;}
+
+/* NAVBAR */
+.topbar{background:var(--deep);height:58px;display:flex;align-items:center;justify-content:space-between;padding:0 16px;position:sticky;top:0;z-index:200;border-bottom:1px solid rgba(255,255,255,0.06);}
+.tb-logo{font-family:'Baloo 2',sans-serif;font-size:20px;font-weight:800;color:#fff;display:flex;align-items:center;gap:8px;}
+.tb-logo .logo-dot{width:8px;height:8px;background:var(--saffron);border-radius:50%;display:inline-block;}
+.tb-logo span{color:var(--saffron);}
+.tb-right{display:flex;align-items:center;gap:8px;}
+.tb-user{background:rgba(255,255,255,0.08);border-radius:20px;padding:5px 12px;font-size:12px;color:rgba(255,255,255,0.75);max-width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.tb-logout{background:rgba(239,68,68,0.15);border:1px solid rgba(239,68,68,0.25);color:#FCA5A5;padding:5px 11px;border-radius:8px;cursor:pointer;font-size:11px;font-weight:600;}
+
+/* BOTTOM NAV */
+.botbar{position:fixed;bottom:0;left:0;right:0;background:var(--deep);border-top:1px solid rgba(255,255,255,0.08);display:flex;z-index:200;height:62px;}
+.bni{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;cursor:pointer;color:rgba(255,255,255,0.35);transition:all 0.3s;position:relative;}
+.bni.on{color:var(--saffron);}
+.bni.on::before{content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);width:30px;height:3px;background:var(--saffron);border-radius:0 0 4px 4px;}
+.bni-ic{font-size:20px;}
+.bni-lb{font-size:9px;font-weight:700;letter-spacing:0.3px;}
+
+/* PAGES */
+.pg{display:none;padding:14px 14px 20px;max-width:920px;margin:0 auto;animation:fadeUp 0.3s ease;}
+.pg.on{display:block;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* HERO BANNER */
+.hero{background:linear-gradient(135deg,var(--navy) 0%,#0F2460 60%,var(--blue) 100%);border-radius:20px;padding:22px 20px;color:#fff;margin-bottom:18px;position:relative;overflow:hidden;}
+.hero::before{content:'';position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");}
+.hero-emoji{position:absolute;right:14px;bottom:-8px;font-size:72px;opacity:0.1;transform:rotate(10deg);}
+.hero h2{font-family:'Baloo 2',sans-serif;font-size:20px;font-weight:800;position:relative;z-index:1;}
+.hero p{color:rgba(255,255,255,0.6);font-size:12px;margin-top:3px;position:relative;z-index:1;}
+.hero-target{display:inline-flex;align-items:center;gap:6px;background:rgba(255,107,0,0.3);border:1px solid rgba(255,107,0,0.5);padding:4px 12px;border-radius:20px;font-size:11px;font-weight:700;margin-top:10px;position:relative;z-index:1;}
+.streak-bar{display:flex;align-items:center;gap:8px;margin-top:12px;position:relative;z-index:1;}
+.streak-pill{background:rgba(255,215,0,0.2);border:1px solid rgba(255,215,0,0.4);padding:4px 10px;border-radius:20px;font-size:11px;font-weight:700;color:var(--gold);}
+
+/* STATS */
+.stats4{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:18px;}
+.scard{background:#fff;border-radius:16px;padding:14px 16px;box-shadow:0 2px 12px rgba(0,0,0,0.06);display:flex;align-items:center;gap:12px;}
+.scard-icon{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;}
+.scard-icon.o{background:linear-gradient(135deg,#FFF7ED,#FED7AA);}
+.scard-icon.b{background:linear-gradient(135deg,#EFF6FF,#BFDBFE);}
+.scard-icon.g{background:linear-gradient(135deg,#F0FDF4,#BBF7D0);}
+.scard-icon.p{background:linear-gradient(135deg,#FAF5FF,#DDD6FE);}
+.scard-val{font-family:'Baloo 2',sans-serif;font-size:22px;font-weight:800;color:var(--text);line-height:1;}
+.scard-lbl{font-size:11px;color:var(--muted);margin-top:2px;font-weight:500;}
+
+/* SECTION TITLE */
+.stitle{font-family:'Baloo 2',sans-serif;font-size:17px;font-weight:800;color:var(--text);margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+.stitle span{font-size:13px;color:var(--muted);font-weight:500;margin-left:auto;}
+
+/* EXAM SECTIONS - BIG 3 */
+.exam3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:18px;}
+.exam-pill{border-radius:16px;padding:16px 12px;text-align:center;cursor:pointer;transition:all 0.3s;position:relative;overflow:hidden;}
+.exam-pill.ssc{background:linear-gradient(135deg,#FF6B00,#FF9A3C);}
+.exam-pill.railway{background:linear-gradient(135deg,#1847CC,#2563EB);}
+.exam-pill.state{background:linear-gradient(135deg,#7C3AED,#A855F7);}
+.exam-pill:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(0,0,0,0.2);}
+.ep-icon{font-size:26px;margin-bottom:6px;}
+.ep-name{font-family:'Baloo 2',sans-serif;font-size:13px;font-weight:800;color:#fff;}
+.ep-count{font-size:10px;color:rgba(255,255,255,0.7);margin-top:2px;}
+
+/* QUICK CARDS */
+.quick4{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:18px;}
+.qcard2{background:#fff;border-radius:16px;padding:16px;cursor:pointer;box-shadow:0 2px 12px rgba(0,0,0,0.06);transition:all 0.3s;border:2px solid transparent;display:flex;align-items:center;gap:12px;}
+.qcard2:hover{transform:translateY(-3px);border-color:var(--saffron);box-shadow:0 8px 24px rgba(255,107,0,0.15);}
+.qc2-icon{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;}
+.qc2-icon.o{background:linear-gradient(135deg,#FFF7ED,#FED7AA);}
+.qc2-icon.b{background:linear-gradient(135deg,#EFF6FF,#BFDBFE);}
+.qc2-icon.g{background:linear-gradient(135deg,#F0FDF4,#BBF7D0);}
+.qc2-icon.p{background:linear-gradient(135deg,#FAF5FF,#DDD6FE);}
+.qc2-icon.r{background:linear-gradient(135deg,#FFF1F2,#FFE4E6);}
+.qc2-icon.y{background:linear-gradient(135deg,#FFFBEB,#FEF3C7);}
+.qc2-title{font-family:'Baloo 2',sans-serif;font-size:13px;font-weight:700;color:var(--text);}
+.qc2-sub{font-size:11px;color:var(--muted);margin-top:2px;}
+
+/* SUBJECT FILTER TABS */
+.ftabs{display:flex;gap:7px;overflow-x:auto;padding-bottom:3px;margin-bottom:14px;scrollbar-width:none;}
+.ftabs::-webkit-scrollbar{display:none;}
+.ftab{padding:7px 14px;border-radius:20px;border:2px solid var(--border);background:#fff;cursor:pointer;font-size:12px;font-weight:600;color:var(--muted);white-space:nowrap;transition:all 0.3s;}
+.ftab.on{background:var(--saffron);border-color:var(--saffron);color:#fff;}
+
+/* CONTENT CARDS */
+.cgrid{display:grid;gap:11px;}
+.ccard{background:#fff;border-radius:16px;padding:16px;box-shadow:0 2px 10px rgba(0,0,0,0.06);cursor:pointer;transition:all 0.3s;display:flex;align-items:center;gap:13px;}
+.ccard:hover{transform:translateX(4px);box-shadow:0 4px 18px rgba(0,0,0,0.1);}
+.ccard-icon{width:48px;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;}
+.ccard-icon.pdf{background:linear-gradient(135deg,#FEE2E2,#FECACA);}
+.ccard-icon.img{background:linear-gradient(135deg,#EDE9FE,#DDD6FE);}
+.ccard-icon.video{background:linear-gradient(135deg,#FEE2E2,#FECACA);}
+.ccard-icon.html{background:linear-gradient(135deg,#FEF3C7,#FDE68A);}
+.ccard-icon.text{background:linear-gradient(135deg,#EFF6FF,#BFDBFE);}
+.ccard-icon.ebook{background:linear-gradient(135deg,#F0FDF4,#BBF7D0);}
+.ccard-info{flex:1;min-width:0;}
+.ccard-title{font-family:'Baloo 2',sans-serif;font-size:14px;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.ccard-meta{font-size:11px;color:var(--muted);margin-top:3px;}
+.ccard-tags{display:flex;gap:5px;margin-top:5px;flex-wrap:wrap;}
+.ctag{padding:2px 8px;border-radius:5px;font-size:10px;font-weight:700;}
+.ctag.ssc{background:#FEF3C7;color:#92400E;}
+.ctag.railway{background:#DBEAFE;color:#1E40AF;}
+.ctag.state{background:#EDE9FE;color:#5B21B6;}
+.ctag.both{background:#D1FAE5;color:#065F46;}
+.ctag.type{background:var(--light);color:var(--blue);}
+.ccard-arr{font-size:18px;color:var(--border);flex-shrink:0;}
+
+/* QUIZ CARDS */
+.qzgrid{display:grid;gap:11px;}
+.qzcard{background:#fff;border-radius:16px;padding:18px;box-shadow:0 2px 10px rgba(0,0,0,0.06);}
+.qzcard-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;}
+.qzcard-title{font-family:'Baloo 2',sans-serif;font-size:15px;font-weight:700;color:var(--text);}
+.diff-badge{padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;}
+.diff-Easy{background:#D1FAE5;color:#065F46;}
+.diff-Medium{background:#FEF3C7;color:#92400E;}
+.diff-Hard{background:#FEE2E2;color:#991B1B;}
+.qzcard-info{display:flex;gap:12px;margin-bottom:12px;flex-wrap:wrap;}
+.qzcard-info span{font-size:12px;color:var(--muted);display:flex;align-items:center;gap:3px;}
+.qzcard-tags{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap;}
+.start-qz{width:100%;padding:11px;background:linear-gradient(135deg,var(--saffron),var(--saffron2));color:#fff;border:none;border-radius:12px;font-family:'Baloo 2',sans-serif;font-size:14px;font-weight:700;cursor:pointer;transition:all 0.3s;}
+.start-qz:hover{transform:translateY(-2px);}
+
+/* CURRENT AFFAIRS */
+.ca-card{background:#fff;border-radius:14px;padding:14px;box-shadow:0 2px 10px rgba(0,0,0,0.06);margin-bottom:10px;cursor:pointer;transition:all 0.3s;border-left:4px solid var(--saffron);}
+.ca-card:hover{transform:translateX(4px);}
+.ca-date{font-size:10px;font-weight:700;color:var(--saffron);text-transform:uppercase;letter-spacing:1px;margin-bottom:5px;}
+.ca-title{font-family:'Baloo 2',sans-serif;font-size:14px;font-weight:700;color:var(--text);margin-bottom:4px;}
+.ca-desc{font-size:12px;color:var(--muted);line-height:1.6;}
+.ca-tags{display:flex;gap:5px;margin-top:8px;flex-wrap:wrap;}
+
+/* MOCK TEST */
+.mock-card{background:linear-gradient(135deg,var(--navy),#0F2460);border-radius:16px;padding:18px;margin-bottom:10px;color:#fff;cursor:pointer;transition:all 0.3s;position:relative;overflow:hidden;}
+.mock-card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,transparent,rgba(255,255,255,0.03));}
+.mock-card:hover{transform:translateY(-3px);box-shadow:0 10px 28px rgba(24,71,204,0.4);}
+.mock-title{font-family:'Baloo 2',sans-serif;font-size:15px;font-weight:800;margin-bottom:6px;}
+.mock-info{display:flex;gap:12px;flex-wrap:wrap;}
+.mock-info span{font-size:12px;color:rgba(255,255,255,0.7);}
+.mock-btn{display:inline-flex;align-items:center;gap:6px;background:var(--saffron);padding:7px 16px;border-radius:10px;font-size:12px;font-weight:700;margin-top:12px;}
+
+/* EBOOKS */
+.ebook-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;}
+.ebook-card{background:#fff;border-radius:14px;padding:14px;box-shadow:0 2px 10px rgba(0,0,0,0.06);cursor:pointer;transition:all 0.3s;text-align:center;}
+.ebook-card:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(0,0,0,0.12);}
+.ebook-cover{width:60px;height:80px;border-radius:8px;margin:0 auto 10px;display:flex;align-items:center;justify-content:center;font-size:28px;box-shadow:0 4px 12px rgba(0,0,0,0.15);}
+.ebook-title{font-family:'Baloo 2',sans-serif;font-size:12px;font-weight:700;color:var(--text);line-height:1.3;}
+.ebook-sub{font-size:10px;color:var(--muted);margin-top:3px;}
+.ebook-btn{margin-top:8px;padding:5px 12px;background:var(--light);border:none;border-radius:8px;font-size:11px;font-weight:700;color:var(--blue);cursor:pointer;}
+
+/* PROGRESS PAGE */
+.prog-header{background:linear-gradient(135deg,#7C3AED,#A855F7);border-radius:18px;padding:20px;color:#fff;margin-bottom:16px;text-align:center;}
+.prog-circle{width:110px;height:110px;border-radius:50%;border:8px solid rgba(255,255,255,0.3);display:flex;flex-direction:column;align-items:center;justify-content:center;margin:0 auto 12px;}
+.prog-pct{font-family:'Baloo 2',sans-serif;font-size:28px;font-weight:800;}
+.prog-lbl{font-size:11px;opacity:0.8;}
+.hist-card{background:#fff;border-radius:14px;padding:14px;box-shadow:0 2px 10px rgba(0,0,0,0.06);margin-bottom:10px;display:flex;align-items:center;gap:12px;}
+.hist-score{width:50px;height:50px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-family:'Baloo 2',sans-serif;font-size:14px;font-weight:800;flex-shrink:0;}
+.hs-good{background:linear-gradient(135deg,var(--success),#34D399);color:#fff;}
+.hs-ok{background:linear-gradient(135deg,#F59E0B,#FCD34D);color:#fff;}
+.hs-bad{background:linear-gradient(135deg,var(--danger),#F87171);color:#fff;}
+.hist-info{flex:1;}
+.hist-title{font-family:'Baloo 2',sans-serif;font-size:13px;font-weight:700;color:var(--text);}
+.hist-meta{font-size:11px;color:var(--muted);margin-top:2px;}
+
+/* ===== QUIZ ACTIVE ===== */
+#quizActive{display:none;position:fixed;inset:0;background:var(--light);z-index:500;overflow-y:auto;padding:14px;}
+.qa-header{background:var(--deep);border-radius:16px;padding:14px 18px;display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;position:sticky;top:0;z-index:10;}
+.qa-prog{flex:1;}
+.qa-qinfo{font-size:12px;color:rgba(255,255,255,0.7);margin-bottom:6px;}
+.qa-bar{background:rgba(255,255,255,0.15);height:6px;border-radius:3px;overflow:hidden;}
+.qa-fill{height:6px;background:linear-gradient(90deg,var(--saffron),var(--gold));border-radius:3px;transition:width 0.5s;}
+.qa-timer{background:var(--saffron);padding:8px 14px;border-radius:10px;font-family:'Baloo 2',sans-serif;font-weight:800;font-size:15px;color:#fff;margin-left:14px;flex-shrink:0;}
+.qa-timer.urgent{background:var(--red);animation:pulse 0.5s ease-in-out infinite;}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
+.qa-card{background:#fff;border-radius:20px;padding:20px;box-shadow:0 4px 20px rgba(0,0,0,0.08);margin-bottom:14px;max-width:700px;margin-left:auto;margin-right:auto;}
+.qa-qnum{font-size:10px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:10px;}
+.qa-qtext{font-size:17px;font-weight:600;color:var(--text);line-height:1.6;margin-bottom:18px;}
+.qa-opts{display:grid;gap:9px;}
+.qa-opt{width:100%;padding:13px 16px;background:var(--light);border:2px solid var(--border);border-radius:13px;text-align:left;cursor:pointer;font-size:14px;font-family:'Hind',sans-serif;font-weight:500;color:var(--text);transition:all 0.25s;display:flex;align-items:center;gap:10px;}
+.qa-opt:hover:not(.locked){border-color:var(--saffron);background:#FFF7F0;transform:translateX(3px);}
+.qa-opt-letter{width:28px;height:28px;border-radius:8px;background:var(--border);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;flex-shrink:0;transition:all 0.25s;}
+.qa-opt.correct{background:#D1FAE5;border-color:var(--success);}
+.qa-opt.correct .qa-opt-letter{background:var(--success);color:#fff;}
+.qa-opt.wrong{background:#FEE2E2;border-color:var(--danger);}
+.qa-opt.wrong .qa-opt-letter{background:var(--danger);color:#fff;}
+.qa-exp{background:#F0FDF4;border:1px solid #BBF7D0;border-radius:12px;padding:14px;margin-top:12px;}
+.qa-exp h4{color:var(--success);font-size:12px;font-weight:700;margin-bottom:5px;}
+.qa-exp p{font-size:13px;color:#065F46;line-height:1.6;}
+.qa-next{width:100%;max-width:700px;display:block;margin:0 auto;padding:13px;background:linear-gradient(135deg,var(--blue),var(--blue2));color:#fff;border:none;border-radius:14px;font-family:'Baloo 2',sans-serif;font-size:15px;font-weight:700;cursor:pointer;margin-top:12px;}
+.qa-submit{background:linear-gradient(135deg,var(--success),#34D399);}
+
+/* RESULT */
+.result-wrap{max-width:500px;margin:0 auto;text-align:center;padding:20px 0;}
+.res-circle{width:130px;height:130px;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;margin:0 auto 20px;position:relative;}
+.res-circle::before{content:'';position:absolute;inset:-6px;border-radius:50%;border:3px solid transparent;background:linear-gradient(135deg,var(--saffron),var(--gold)) border-box;-webkit-mask:linear-gradient(#fff 0 0) padding-box,linear-gradient(#fff 0 0);-webkit-mask-composite:destination-out;}
+.res-circle.good{background:linear-gradient(135deg,var(--success),#34D399);}
+.res-circle.ok{background:linear-gradient(135deg,#F59E0B,#FCD34D);}
+.res-circle.bad{background:linear-gradient(135deg,var(--danger),#F87171);}
+.res-pct{font-family:'Baloo 2',sans-serif;font-size:34px;font-weight:800;color:#fff;}
+.res-lbl{font-size:11px;color:rgba(255,255,255,0.85);}
+.res-title{font-family:'Baloo 2',sans-serif;font-size:22px;font-weight:800;color:var(--text);margin-bottom:5px;}
+.res-sub{color:var(--muted);font-size:13px;margin-bottom:24px;}
+.res-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:24px;}
+.rs2{background:#fff;border-radius:14px;padding:14px;box-shadow:0 2px 10px rgba(0,0,0,0.06);}
+.rs2-val{font-family:'Baloo 2',sans-serif;font-size:20px;font-weight:800;}
+.rs2-lbl{font-size:10px;color:var(--muted);}
+.rs2-val.c{color:var(--success);}
+.rs2-val.w{color:var(--danger);}
+.rs2-val.s{color:var(--blue);}
+.res-btns{display:flex;gap:10px;justify-content:center;}
+.res-retry{padding:12px 24px;background:linear-gradient(135deg,var(--saffron),var(--saffron2));color:#fff;border:none;border-radius:12px;font-family:'Baloo 2',sans-serif;font-size:14px;font-weight:700;cursor:pointer;}
+.res-home{padding:12px 24px;background:var(--light);color:var(--blue);border:2px solid var(--blue);border-radius:12px;font-family:'Baloo 2',sans-serif;font-size:14px;font-weight:700;cursor:pointer;}
+
+/* NOTE READER */
+#noteReader{display:none;position:fixed;inset:0;background:#fff;z-index:500;overflow-y:auto;}
+.nr-nav{background:var(--deep);padding:13px 16px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:10;}
+.nr-back{background:rgba(255,255,255,0.1);border:none;color:#fff;padding:7px 12px;border-radius:10px;cursor:pointer;font-size:13px;font-family:'Hind',sans-serif;}
+.nr-title{font-family:'Baloo 2',sans-serif;font-size:15px;font-weight:700;color:#fff;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.nr-body{padding:18px;max-width:720px;margin:0 auto;}
+.content-iframe{width:100%;height:78vh;border:none;border-radius:14px;box-shadow:0 4px 20px rgba(0,0,0,0.1);}
+.content-img{width:100%;max-height:80vh;object-fit:contain;border-radius:14px;}
+.content-video{width:100%;aspect-ratio:16/9;border-radius:14px;overflow:hidden;}
+.content-video iframe{width:100%;height:100%;border:none;}
+.dl-box{text-align:center;padding:50px 20px;}
+.dl-icon{font-size:56px;margin-bottom:16px;}
+.dl-title{font-family:'Baloo 2',sans-serif;font-size:18px;font-weight:700;color:var(--text);margin-bottom:10px;}
+.dl-btn{display:inline-block;padding:12px 28px;background:linear-gradient(135deg,var(--blue),var(--blue2));color:#fff;border-radius:12px;text-decoration:none;font-family:'Baloo 2',sans-serif;font-weight:700;font-size:14px;margin-top:8px;}
+
+/* ===== ADMIN PANEL ===== */
+.admin-hero{background:linear-gradient(135deg,#07090F,#0B1437);border-radius:20px;padding:20px;color:#fff;margin-bottom:16px;position:relative;overflow:hidden;}
+.admin-hero::before{content:'👑';position:absolute;right:16px;top:50%;transform:translateY(-50%);font-size:80px;opacity:0.06;}
+.admin-hero h2{font-family:'Baloo 2',sans-serif;font-size:20px;font-weight:800;}
+.admin-hero p{color:rgba(255,255,255,0.55);font-size:12px;margin-top:3px;}
+.admin-badge{display:inline-block;background:var(--saffron);color:#fff;padding:2px 10px;border-radius:6px;font-size:10px;font-weight:700;margin-left:8px;vertical-align:middle;}
+.admin-tabs{display:flex;background:#fff;border-radius:16px;padding:4px;gap:3px;margin-bottom:16px;box-shadow:0 2px 10px rgba(0,0,0,0.06);overflow-x:auto;}
+.atab2{flex:1;min-width:60px;padding:9px 6px;border:none;background:transparent;cursor:pointer;font-family:'Hind',sans-serif;font-size:10px;font-weight:700;color:var(--muted);border-radius:12px;transition:all 0.3s;text-align:center;white-space:nowrap;}
+.atab2.on{background:var(--deep);color:#fff;}
+.asec2{display:none;}
+.asec2.on{display:block;}
+
+/* UPLOAD AREA */
+.upload-zone{border:2px dashed #CBD5E1;border-radius:18px;padding:30px 20px;text-align:center;cursor:pointer;transition:all 0.3s;background:#fff;margin-bottom:14px;}
+.upload-zone:hover,.upload-zone.drag{border-color:var(--saffron);background:#FFF7F0;}
+.uz-icon{font-size:44px;margin-bottom:12px;}
+.uz-title{font-family:'Baloo 2',sans-serif;font-size:16px;font-weight:700;color:var(--text);margin-bottom:5px;}
+.uz-sub{font-size:12px;color:var(--muted);margin-bottom:14px;}
+.uz-types{display:flex;gap:7px;justify-content:center;flex-wrap:wrap;}
+.utype{padding:4px 12px;border-radius:20px;font-size:11px;font-weight:700;}
+.ut-pdf{background:#FEE2E2;color:#991B1B;}
+.ut-img{background:#EDE9FE;color:#5B21B6;}
+.ut-vid{background:#FEE2E2;color:#991B1B;}
+.ut-html{background:#FEF3C7;color:#92400E;}
+.ut-doc{background:#DBEAFE;color:#1E40AF;}
+.ut-any{background:#D1FAE5;color:#065F46;}
+.file-prev{background:#F8FAFC;border:1px solid var(--border);border-radius:14px;padding:14px;margin-bottom:14px;display:none;align-items:center;gap:12px;}
+.file-prev.show{display:flex;}
+.fp-icon2{font-size:32px;}
+.fp-info{flex:1;}
+.fp-name2{font-weight:700;color:var(--text);font-size:14px;}
+.fp-size2{font-size:12px;color:var(--muted);margin-top:2px;}
+.fp-clear{background:#FEE2E2;border:none;color:#991B1B;padding:6px 12px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:700;}
+.uprog-wrap{background:#F1F5F9;border-radius:12px;padding:14px;margin-bottom:14px;display:none;}
+.uprog-wrap.show{display:block;}
+.uprog-label{font-size:12px;font-weight:700;color:var(--text);margin-bottom:7px;}
+.uprog-bar{background:#E2E8F0;border-radius:4px;height:10px;overflow:hidden;}
+.uprog-fill{height:10px;background:linear-gradient(90deg,var(--saffron),var(--gold));border-radius:4px;transition:width 0.3s;width:0%;}
+.uprog-pct{font-size:11px;color:var(--muted);margin-top:5px;}
+.aform2{display:grid;gap:10px;}
+.aform2 input,.aform2 select,.aform2 textarea{width:100%;padding:11px 14px;border:2px solid var(--border);border-radius:12px;font-family:'Hind',sans-serif;font-size:13px;outline:none;transition:all 0.3s;background:#fff;color:var(--text);}
+.aform2 input:focus,.aform2 textarea:focus,.aform2 select:focus{border-color:var(--blue);}
+.aform2 textarea{min-height:100px;resize:vertical;}
+.save-btn2{padding:12px 20px;background:linear-gradient(135deg,var(--success),#34D399);color:#fff;border:none;border-radius:12px;font-family:'Baloo 2',sans-serif;font-size:14px;font-weight:700;cursor:pointer;width:100%;transition:all 0.3s;}
+.save-btn2:disabled{opacity:0.6;cursor:not-allowed;}
+.save-btn2:hover:not(:disabled){transform:translateY(-2px);}
+.admin-section-card{background:#fff;border-radius:18px;padding:18px;box-shadow:0 2px 10px rgba(0,0,0,0.06);margin-bottom:14px;}
+.admin-section-card h3{font-family:'Baloo 2',sans-serif;font-size:15px;font-weight:700;color:var(--text);margin-bottom:14px;display:flex;align-items:center;gap:8px;}
+.del-btn2{background:#FEE2E2;border:none;color:#991B1B;padding:5px 10px;border-radius:7px;cursor:pointer;font-size:11px;font-weight:700;}
+.content-row{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);}
+.content-row:last-child{border-bottom:none;}
+.cr-icon{font-size:22px;flex-shrink:0;}
+.cr-info{flex:1;min-width:0;}
+.cr-title{font-size:13px;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.cr-meta{font-size:11px;color:var(--muted);}
+.student-row2{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);}
+.student-row2:last-child{border-bottom:none;}
+.sr-avatar{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,var(--blue),var(--blue2));display:flex;align-items:center;justify-content:center;font-family:'Baloo 2',sans-serif;font-weight:800;color:#fff;font-size:14px;flex-shrink:0;}
+.sr-info{flex:1;}
+.sr-name{font-size:13px;font-weight:700;color:var(--text);}
+.sr-email{font-size:11px;color:var(--muted);}
+.sr-score{background:var(--light);padding:4px 10px;border-radius:8px;font-size:12px;font-weight:700;color:var(--blue);}
+
+/* QUIZ BUILDER */
+.q-entry2{background:#F8FAFC;border:1.5px solid var(--border);border-radius:14px;padding:14px;margin-bottom:10px;}
+.q-entry2-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;}
+.q-entry2-num{font-family:'Baloo 2',sans-serif;font-size:13px;font-weight:700;color:var(--blue);}
+.add-q-btn2{width:100%;padding:11px;background:var(--light);border:2px dashed #CBD5E1;border-radius:12px;color:var(--blue);font-size:13px;font-weight:700;cursor:pointer;transition:all 0.3s;font-family:'Hind',sans-serif;}
+.add-q-btn2:hover{border-color:var(--blue);background:#EEF2FF;}
+
+/* CURRENT AFFAIRS SECTION */
+.ca-section{background:#fff;border-radius:16px;padding:16px;box-shadow:0 2px 10px rgba(0,0,0,0.06);margin-bottom:14px;}
+.ca-sec-title{font-family:'Baloo 2',sans-serif;font-size:14px;font-weight:700;color:var(--text);margin-bottom:12px;display:flex;align-items:center;gap:6px;}
+
+/* EMPTY STATE */
+.empty2{text-align:center;padding:36px 20px;color:var(--muted);}
+.empty2-icon{font-size:44px;margin-bottom:10px;}
+.empty2-text{font-size:14px;}
+
+/* SCROLLBAR */
+::-webkit-scrollbar{width:5px;}
+::-webkit-scrollbar-track{background:#f1f1f1;}
+::-webkit-scrollbar-thumb{background:#CBD5E1;border-radius:3px;}
+</style>
+</head>
+<body>
+
+<!-- LOADING -->
+<div id="loadingScreen">
+  <div class="load-logo">Notes<span>Verse</span></div>
+  <div class="load-sub">SSC · Railway · State Exams</div>
+  <div class="load-dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+</div>
+
+<!-- LOGIN -->
+<div id="loginScreen" class="screen">
+  <div class="login-bg"><div class="bg-grad g1"></div><div class="bg-grad g2"></div><div class="bg-grad g3"></div><div class="grid-pattern"></div></div>
+  <div class="login-wrap">
+    <div class="brand-mark">
+      <div class="brand-icon">📚</div>
+      <h1>Notes<span>Verse</span></h1>
+      <p>India's Best Exam Preparation Platform</p>
+    </div>
+    <div class="login-card">
+      <div class="tab-switch">
+        <button class="tsw on" onclick="switchTab('login')">Login</button>
+        <button class="tsw" onclick="switchTab('register')">Register</button>
+      </div>
+      <div id="lForm">
+        <div class="fg"><label>Email</label><input type="email" id="lEmail" placeholder="aapka@email.com"></div>
+        <div class="fg"><label>Password</label><input type="password" id="lPass" placeholder="••••••••"></div>
+        <button class="btn-go" id="lBtn" onclick="doLogin()">Login करें →</button>
+        <div class="errmsg" id="lErr"></div>
+      </div>
+      <div id="rForm" style="display:none">
+        <div class="fg"><label>Full Name</label><input type="text" id="rName" placeholder="Apna naam likhein"></div>
+        <div class="fg"><label>Email</label><input type="email" id="rEmail" placeholder="aapka@email.com"></div>
+        <div class="fg"><label>Exam Target</label>
+          <select id="rExam">
+            <option>SSC CGL</option><option>SSC CHSL</option><option>SSC MTS</option>
+            <option>SSC GD Constable</option><option>SSC CPO</option><option>SSC Stenographer</option>
+            <option>Railway NTPC</option><option>Railway Group D</option><option>Railway ALP</option>
+            <option>Railway JE</option><option>UP Police</option><option>Bihar Police</option>
+            <option>UPSSSC PET</option><option>Other State Exam</option>
+          </select>
+        </div>
+        <div class="fg"><label>Password (min 6 characters)</label><input type="password" id="rPass" placeholder="Strong password banayein"></div>
+        <button class="btn-go" id="rBtn" onclick="doRegister()">Register करें →</button>
+        <div class="errmsg" id="rErr"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="appScreen">
+  <div class="topbar">
+    <div class="tb-logo"><div class="logo-dot"></div>Notes<span>Verse</span></div>
+    <div class="tb-right">
+      <div class="tb-user" id="tbUser">Student</div>
+      <button class="tb-logout" onclick="doLogout()">Logout</button>
+    </div>
+  </div>
+
+  <!-- HOME -->
+  <div id="pgHome" class="pg on">
+    <div class="hero">
+      <div class="hero-emoji">🎯</div>
+      <h2>Namaste, <span id="heroName">Student</span>! 🙏</h2>
+      <p>Aaj bhi mehnat karo — safalta zaroor milegi</p>
+      <div class="hero-target" id="heroTarget">🎯 SSC CGL</div>
+      <div class="streak-bar"><span class="streak-pill">🔥 3 Day Streak</span><span style="font-size:11px;color:rgba(255,255,255,0.5)">Kal bhi aana!</span></div>
+    </div>
+
+    <div class="stats4">
+      <div class="scard"><div class="scard-icon o">📝</div><div><div class="scard-val" id="stQuiz">0</div><div class="scard-lbl">Quizzes Diye</div></div></div>
+      <div class="scard"><div class="scard-icon b">🏆</div><div><div class="scard-val" id="stBest">0%</div><div class="scard-lbl">Best Score</div></div></div>
+      <div class="scard"><div class="scard-icon g">📖</div><div><div class="scard-val" id="stNotes">0</div><div class="scard-lbl">Notes Padhe</div></div></div>
+      <div class="scard"><div class="scard-icon p">⭐</div><div><div class="scard-val" id="stPts">0</div><div class="scard-lbl">Points</div></div></div>
+    </div>
+
+    <div class="stitle">📚 Exam Categories</div>
+    <div class="exam3">
+      <div class="exam-pill ssc" onclick="goExam('ssc')"><div class="ep-icon">📋</div><div class="ep-name">SSC</div><div class="ep-count">CGL·CHSL·MTS·GD·CPO</div></div>
+      <div class="exam-pill railway" onclick="goExam('railway')"><div class="ep-icon">🚂</div><div class="ep-name">Railway</div><div class="ep-count">NTPC·GroupD·ALP·JE</div></div>
+      <div class="exam-pill state" onclick="goExam('state')"><div class="ep-icon">🏛️</div><div class="ep-name">State</div><div class="ep-count">UP·Bihar·MP·Raj...</div></div>
+    </div>
+
+    <div class="stitle">⚡ Quick Access</div>
+    <div class="quick4">
+      <div class="qcard2" onclick="showPage('pgNotes')"><div class="qc2-icon b">📖</div><div><div class="qc2-title">Notes</div><div class="qc2-sub">Chapter-wise padho</div></div></div>
+      <div class="qcard2" onclick="showPage('pgQuiz')"><div class="qc2-icon o">📝</div><div><div class="qc2-title">Quiz</div><div class="qc2-sub">Practice karo</div></div></div>
+      <div class="qcard2" onclick="showPage('pgEbooks')"><div class="qc2-icon g">📚</div><div><div class="qc2-title">eBooks</div><div class="qc2-sub">PDF library</div></div></div>
+      <div class="qcard2" onclick="showPage('pgCA')"><div class="qc2-icon y">📰</div><div><div class="qc2-title">Current Affairs</div><div class="qc2-sub">Daily updates</div></div></div>
+      <div class="qcard2" onclick="showPage('pgMock')"><div class="qc2-icon r">🎯</div><div><div class="qc2-title">Mock Test</div><div class="qc2-sub">Full length test</div></div></div>
+      <div class="qcard2" onclick="showPage('pgProgress')"><div class="qc2-icon p">📊</div><div><div class="qc2-title">Progress</div><div class="qc2-sub">Score history</div></div></div>
+    </div>
+
+    <div class="stitle">💡 Aaj ka Tip</div>
+    <div style="background:#FFF7F0;border-left:4px solid var(--saffron);padding:14px 16px;border-radius:0 14px 14px 0;margin-bottom:18px;">
+      <p style="font-size:13px;line-height:1.7;color:var(--text);">🔑 <strong>SSC Math Trick:</strong> Profit & Loss mein CP=100 maanke solve karo — 3x faster answer milega! Jaise: 20% profit pe SP=120, 25% profit pe SP=125.</p>
+    </div>
+  </div>
+
+  <!-- NOTES PAGE -->
+  <div id="pgNotes" class="pg">
+    <div class="stitle">📖 Study Notes</div>
+    <div class="ftabs" id="notesTabs">
+      <button class="ftab on" onclick="filterContent('notes','all',this)">Sab</button>
+      <button class="ftab" onclick="filterContent('notes','ssc',this)">SSC</button>
+      <button class="ftab" onclick="filterContent('notes','railway',this)">Railway</button>
+      <button class="ftab" onclick="filterContent('notes','state',this)">State</button>
+      <button class="ftab" onclick="filterContent('notes','math',this)">Math</button>
+      <button class="ftab" onclick="filterContent('notes','gk',this)">GK</button>
+      <button class="ftab" onclick="filterContent('notes','reasoning',this)">Reasoning</button>
+      <button class="ftab" onclick="filterContent('notes','english',this)">English</button>
+      <button class="ftab" onclick="filterContent('notes','science',this)">Science</button>
+      <button class="ftab" onclick="filterContent('notes','hindi',this)">Hindi</button>
+    </div>
+    <div class="cgrid" id="notesGrid"></div>
+  </div>
+
+  <!-- QUIZ PAGE -->
+  <div id="pgQuiz" class="pg">
+    <div class="stitle">📝 Practice Tests</div>
+    <div class="ftabs">
+      <button class="ftab on" onclick="filterQuiz('all',this)">Sab</button>
+      <button class="ftab" onclick="filterQuiz('ssc',this)">SSC</button>
+      <button class="ftab" onclick="filterQuiz('railway',this)">Railway</button>
+      <button class="ftab" onclick="filterQuiz('math',this)">Math</button>
+      <button class="ftab" onclick="filterQuiz('reasoning',this)">Reasoning</button>
+      <button class="ftab" onclick="filterQuiz('gk',this)">GK</button>
+      <button class="ftab" onclick="filterQuiz('english',this)">English</button>
+      <button class="ftab" onclick="filterQuiz('science',this)">Science</button>
+    </div>
+    <div class="qzgrid" id="quizGrid"></div>
+  </div>
+
+  <!-- EBOOKS PAGE -->
+  <div id="pgEbooks" class="pg">
+    <div class="stitle">📚 eBook Library</div>
+    <div class="ftabs">
+      <button class="ftab on" onclick="filterContent('ebooks','all',this)">Sab</button>
+      <button class="ftab" onclick="filterContent('ebooks','ssc',this)">SSC</button>
+      <button class="ftab" onclick="filterContent('ebooks','railway',this)">Railway</button>
+      <button class="ftab" onclick="filterContent('ebooks','state',this)">State</button>
+    </div>
+    <div class="ebook-grid" id="ebooksGrid"></div>
+  </div>
+
+  <!-- CURRENT AFFAIRS -->
+  <div id="pgCA" class="pg">
+    <div class="stitle">📰 Current Affairs</div>
+    <div class="ftabs">
+      <button class="ftab on" onclick="filterContent('ca','all',this)">Sab</button>
+      <button class="ftab" onclick="filterContent('ca','national',this)">National</button>
+      <button class="ftab" onclick="filterContent('ca','international',this)">International</button>
+      <button class="ftab" onclick="filterContent('ca','sports',this)">Sports</button>
+      <button class="ftab" onclick="filterContent('ca','economy',this)">Economy</button>
+      <button class="ftab" onclick="filterContent('ca','science',this)">Science</button>
+    </div>
+    <div id="caGrid"></div>
+  </div>
+
+  <!-- MOCK TEST -->
+  <div id="pgMock" class="pg">
+    <div class="stitle">🎯 Mock Tests</div>
+    <div class="ftabs">
+      <button class="ftab on" onclick="filterMock('all',this)">Sab</button>
+      <button class="ftab" onclick="filterMock('ssc',this)">SSC</button>
+      <button class="ftab" onclick="filterMock('railway',this)">Railway</button>
+    </div>
+    <div id="mockGrid"></div>
+  </div>
+
+  <!-- PROGRESS -->
+  <div id="pgProgress" class="pg">
+    <div class="prog-header">
+      <div class="prog-circle"><div class="prog-pct" id="progPct">0%</div><div class="prog-lbl">Overall Score</div></div>
+      <div style="font-family:'Baloo 2',sans-serif;font-size:16px;font-weight:700;">Meri Progress</div>
+      <div style="font-size:12px;opacity:0.7;margin-top:4px;">Pichle quizzes ka record</div>
+    </div>
+    <div id="progressList"></div>
+  </div>
+
+  <!-- ADMIN PAGE -->
+  <div id="pgAdmin" class="pg">
+    <div class="admin-hero">
+      <h2>Admin Panel <span class="admin-badge">ADMIN</span></h2>
+      <p>Content manage karo — upload, quiz banao, students dekho</p>
+    </div>
+
+    <div class="stats4" style="margin-bottom:14px;">
+      <div class="scard"><div class="scard-icon o">👥</div><div><div class="scard-val" id="adStudents">0</div><div class="scard-lbl">Students</div></div></div>
+      <div class="scard"><div class="scard-icon b">📚</div><div><div class="scard-val" id="adContent">0</div><div class="scard-lbl">Total Content</div></div></div>
+    </div>
+
+    <div class="admin-tabs">
+      <button class="atab2 on" onclick="switchAdmin('upload',this)">📤 Upload</button>
+      <button class="atab2" onclick="switchAdmin('ca',this)">📰 Curr. Affairs</button>
+      <button class="atab2" onclick="switchAdmin('quiz',this)">📝 Quiz</button>
+      <button class="atab2" onclick="switchAdmin('manage',this)">📋 Manage</button>
+      <button class="atab2" onclick="switchAdmin('students',this)">👥 Students</button>
+    </div>
+
+    <!-- UPLOAD TAB -->
+    <div class="asec2 on" id="asec-upload">
+      <!-- HOW TO -->
+      <div class="admin-section-card" style="background:linear-gradient(135deg,#EFF6FF,#DBEAFE);border:none;">
+        <h3>🌐 Cloudinary se Direct Upload</h3>
+        <p style="font-size:12px;color:#1E40AF;line-height:1.8;">PDF, Image, Video, HTML, Word — koi bhi file seedha upload karo! Cloudinary pe store hogi aur students ko turant dikhegi.</p>
+      </div>
+
+      <!-- TYPE SELECT -->
+      <div class="admin-section-card">
+        <h3>1️⃣ Content Type Choose Karo</h3>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;" id="typeSelector">
+          <button onclick="selType('pdf',this)" class="utype ut-pdf" style="padding:8px 14px;border:2px solid #EF4444;border-radius:20px;cursor:pointer;font-weight:700;font-size:12px;">📄 PDF</button>
+          <button onclick="selType('img',this)" class="utype" style="padding:8px 14px;border:2px solid #8B5CF6;background:#EDE9FE;color:#5B21B6;border-radius:20px;cursor:pointer;font-weight:700;font-size:12px;">🖼️ Image</button>
+          <button onclick="selType('video',this)" class="utype" style="padding:8px 14px;border:2px solid #EF4444;background:#FEE2E2;color:#991B1B;border-radius:20px;cursor:pointer;font-weight:700;font-size:12px;">🎥 Video</button>
+          <button onclick="selType('html',this)" class="utype ut-html" style="padding:8px 14px;border:2px solid #F59E0B;border-radius:20px;cursor:pointer;font-weight:700;font-size:12px;">🌐 HTML</button>
+          <button onclick="selType('doc',this)" class="utype" style="padding:8px 14px;border:2px solid #3B82F6;background:#DBEAFE;color:#1E40AF;border-radius:20px;cursor:pointer;font-weight:700;font-size:12px;">📝 Word/Doc</button>
+          <button onclick="selType('ebook',this)" class="utype" style="padding:8px 14px;border:2px solid #10B981;background:#D1FAE5;color:#065F46;border-radius:20px;cursor:pointer;font-weight:700;font-size:12px;">📚 eBook</button>
+        </div>
+      </div>
+
+      <!-- UPLOAD ZONE -->
+      <div class="upload-zone" id="dropZone" onclick="document.getElementById('fileIn').click()" ondragover="dragOv(event)" ondragleave="dragLv()" ondrop="dropF(event)">
+        <div class="uz-icon">📂</div>
+        <div class="uz-title">File Yahan Drop Karo ya Tap Karo</div>
+        <div class="uz-sub">Koi bhi format — max 100MB</div>
+        <div class="uz-types">
+          <span class="utype ut-pdf">PDF</span><span class="utype ut-img" style="background:#EDE9FE;color:#5B21B6;">Image</span>
+          <span class="utype ut-vid" style="background:#FEE2E2;color:#991B1B;">Video</span><span class="utype ut-html">HTML</span>
+          <span class="utype ut-doc" style="background:#DBEAFE;color:#1E40AF;">Word</span><span class="utype ut-any">Any File</span>
+        </div>
+      </div>
+      <input type="file" id="fileIn" accept="*/*" style="display:none" onchange="fileSel(this.files[0])">
+
+      <div class="file-prev" id="filePrev">
+        <div class="fp-icon2" id="fpIcon">📄</div>
+        <div class="fp-info"><div class="fp-name2" id="fpName">file.pdf</div><div class="fp-size2" id="fpSize">0 KB</div></div>
+        <button class="fp-clear" onclick="clearFile()">✕ Hatao</button>
+      </div>
+
+      <div class="uprog-wrap" id="uprogWrap">
+        <div class="uprog-label">⬆️ Uploading to Cloudinary...</div>
+        <div class="uprog-bar"><div class="uprog-fill" id="uprogFill"></div></div>
+        <div class="uprog-pct" id="uprogPct">0%</div>
+      </div>
+
+      <div class="admin-section-card">
+        <h3>2️⃣ Details Bharo</h3>
+        <div class="aform2">
+          <input type="text" id="uTitle" placeholder="Content ka title *">
+          <select id="uSection">
+            <option value="notes">📖 Notes</option>
+            <option value="ebook">📚 eBook</option>
+          </select>
+          <select id="uExam">
+            <option value="ssc">SSC (CGL/CHSL/MTS/GD/CPO)</option>
+            <option value="railway">Railway (NTPC/GroupD/ALP/JE)</option>
+            <option value="state">State Exams</option>
+            <option value="both">Sab Exams</option>
+          </select>
+          <select id="uCat">
+            <option value="math">Math / Quantitative Aptitude</option>
+            <option value="reasoning">Reasoning</option>
+            <option value="gk">General Knowledge</option>
+            <option value="english">English</option>
+            <option value="hindi">Hindi</option>
+            <option value="science">General Science</option>
+            <option value="polity">Polity / Constitution</option>
+            <option value="history">History</option>
+            <option value="geography">Geography</option>
+            <option value="economy">Economy</option>
+            <option value="current">Current Affairs</option>
+            <option value="computer">Computer</option>
+          </select>
+          <button class="save-btn2" id="upBtn" onclick="doUpload()" disabled>📤 Upload Karo</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- CURRENT AFFAIRS TAB -->
+    <div class="asec2" id="asec-ca">
+      <div class="admin-section-card">
+        <h3>📰 Naya Current Affairs Add Karo</h3>
+        <div class="aform2">
+          <input type="text" id="caTitle" placeholder="Headline / Title *">
+          <textarea id="caDesc" placeholder="Detailed description likhein..."></textarea>
+          <select id="caCat">
+            <option value="national">National</option>
+            <option value="international">International</option>
+            <option value="sports">Sports</option>
+            <option value="economy">Economy</option>
+            <option value="science">Science & Technology</option>
+            <option value="awards">Awards & Honours</option>
+            <option value="appointments">Appointments</option>
+          </select>
+          <input type="text" id="caTags" placeholder="Tags (comma separated): SSC, Railway, Important">
+          <button class="save-btn2" onclick="saveCA()">✅ Save Karo</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- QUIZ TAB -->
+    <div class="asec2" id="asec-quiz">
+      <div class="admin-section-card">
+        <h3>📝 Naya Quiz Banao</h3>
+        <div class="aform2">
+          <input type="text" id="qzTitle" placeholder="Quiz ka title *">
+          <select id="qzExam">
+            <option value="ssc">SSC</option><option value="railway">Railway</option>
+            <option value="state">State</option><option value="all">Sab</option>
+          </select>
+          <select id="qzCat">
+            <option value="math">Math</option><option value="reasoning">Reasoning</option>
+            <option value="gk">GK</option><option value="english">English</option>
+            <option value="science">Science</option><option value="hindi">Hindi</option>
+          </select>
+          <select id="qzDiff">
+            <option value="Easy">Easy</option><option value="Medium">Medium</option><option value="Hard">Hard</option>
+          </select>
+        </div>
+        <div style="margin:14px 0;">
+          <p style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:10px;">📝 Questions Add Karo:</p>
+          <div id="qBuilder"></div>
+          <button class="add-q-btn2" onclick="addQField()">➕ Naya Sawaal Add Karo</button>
+        </div>
+        <button class="save-btn2" onclick="saveQuiz()">✅ Quiz Save Karo</button>
+      </div>
+    </div>
+
+    <!-- MANAGE TAB -->
+    <div class="asec2" id="asec-manage">
+      <div class="admin-section-card">
+        <h3>📋 Sab Content</h3>
+        <div id="manageList"></div>
+      </div>
+    </div>
+
+    <!-- STUDENTS TAB -->
+    <div class="asec2" id="asec-students">
+      <div class="admin-section-card">
+        <h3>👥 Registered Students</h3>
+        <div id="studentsList"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BOTTOM NAV -->
+  <div class="botbar">
+    <div class="bni on" onclick="showPage('pgHome')" id="bn-home"><div class="bni-ic">🏠</div><div class="bni-lb">Home</div></div>
+    <div class="bni" onclick="showPage('pgNotes')" id="bn-notes"><div class="bni-ic">📖</div><div class="bni-lb">Notes</div></div>
+    <div class="bni" onclick="showPage('pgQuiz')" id="bn-quiz"><div class="bni-ic">📝</div><div class="bni-lb">Quiz</div></div>
+    <div class="bni" onclick="showPage('pgEbooks')" id="bn-ebooks"><div class="bni-ic">📚</div><div class="bni-lb">eBooks</div></div>
+    <div class="bni" onclick="showPage('pgProgress')" id="bn-progress"><div class="bni-ic">📊</div><div class="bni-lb">Progress</div></div>
+    <div class="bni" onclick="showPage('pgAdmin')" id="bn-admin" style="display:none"><div class="bni-ic">👑</div><div class="bni-lb">Admin</div></div>
+  </div>
+</div>
+
+<!-- QUIZ ACTIVE -->
+<div id="quizActive">
+  <div class="qa-header">
+    <div class="qa-prog">
+      <div class="qa-qinfo" id="qaInfo">Q 1/10</div>
+      <div class="qa-bar"><div class="qa-fill" id="qaFill" style="width:10%"></div></div>
+    </div>
+    <div class="qa-timer" id="qaTimer">⏱ 30s</div>
+  </div>
+  <div class="qa-card" style="max-width:720px;margin:0 auto 14px;">
+    <div class="qa-qnum" id="qaQnum">QUESTION 1</div>
+    <div class="qa-qtext" id="qaQtext"></div>
+    <div class="qa-opts" id="qaOpts"></div>
+    <div id="qaExp" style="display:none" class="qa-exp"><h4>✅ Explanation</h4><p id="qaExpText"></p></div>
+  </div>
+  <div style="max-width:720px;margin:0 auto;">
+    <button class="qa-next" id="qaNext" onclick="nextQ()" style="display:none">Agla Sawaal →</button>
+    <button class="qa-next qa-submit" id="qaSubmit" onclick="submitQuiz()" style="display:none">Quiz Submit ✓</button>
+  </div>
+</div>
+
+<!-- NOTE READER -->
+<div id="noteReader">
+  <div class="nr-nav">
+    <button class="nr-back" onclick="closeReader()">← Wapas</button>
+    <div class="nr-title" id="nrTitle">Note</div>
+  </div>
+  <div class="nr-body" id="nrBody"></div>
+</div>
+
+<!-- FIREBASE + CLOUDINARY -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-app.js";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-auth.js";
+import { getFirestore, doc, setDoc, getDoc, collection, addDoc, getDocs, deleteDoc, query, orderBy, updateDoc, increment } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js";
+
+const FB = { apiKey:"AIzaSyB9fxf1D_30gKT6JuBtas1PHHpcBRlDNRQ", authDomain:"notesverse-da966.firebaseapp.com", projectId:"notesverse-da966", storageBucket:"notesverse-da966.firebasestorage.app", messagingSenderId:"1022337274507", appId:"1:1022337274507:web:d4b37251f0d396fa4a3a8e" };
+const app = initializeApp(FB);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+// CLOUDINARY CONFIG
+const CLD_CLOUD = "dzocmldwo";
+const CLD_PRESET = "notesverse";
+const CLD_URL = `https://api.cloudinary.com/v1_1/${CLD_CLOUD}/auto/upload`;
+
+const ADMIN_EMAIL = "educationaj2@gmail.com";
+
+// STATE
+let user=null, udata=null, isAdmin=false;
+let allNotes=[], allQuizzes=[], allCA=[], allMocks=[];
+let curQuiz=null, curQ=0, correct=0, wrong=0, pts=0, answered=false;
+let tmr=null, tLeft=30, selType2='pdf', selFile=null, qCount=0;
+
+// DEFAULT DATA
+const DEF_NOTES = [
+  {title:"Profit & Loss — Complete Formulas",cat:"math",exam:"ssc",section:"notes",type:"text",icon:"➗",content:`<h2 style="font-family:'Baloo 2',sans-serif;color:#07090F;margin-bottom:8px">Profit & Loss</h2><p style="color:#64748B;margin-bottom:18px;font-size:14px;line-height:1.7">SSC CGL, CHSL, MTS aur Railway NTPC mein Profit & Loss se 3-4 sawaal aate hain. Yeh formulas yaad kar lo!</p><div style="background:#EEF2FF;border-radius:14px;padding:16px;margin:12px 0;text-align:center"><p style="font-family:monospace;font-size:16px;font-weight:700;color:#1847CC">Profit = SP - CP</p></div><div style="background:#EEF2FF;border-radius:14px;padding:16px;margin:12px 0;text-align:center"><p style="font-family:monospace;font-size:16px;font-weight:700;color:#1847CC">Profit% = (Profit/CP) × 100</p></div><div style="background:#EEF2FF;border-radius:14px;padding:16px;margin:12px 0;text-align:center"><p style="font-family:monospace;font-size:16px;font-weight:700;color:#1847CC">SP = CP × (100 + P%) / 100</p></div><div style="background:#FFF7F0;border-left:4px solid #FF6B00;padding:14px 16px;border-radius:0 12px 12px 0;margin:14px 0"><p style="font-weight:600;font-size:13px">🔑 Golden Trick: Agar same % par profit aur loss dono ho → Always LOSS hoga<br>Loss% = (Common%)² / 100</p></div><div style="background:#D1FAE5;border-radius:12px;padding:14px;margin-top:14px"><p style="color:#065F46;font-weight:600;font-size:13px">✅ SSC Shortcut: CP=100 maano, phir directly SP calculate karo — 3x fast hoga!</p></div>`},
+  {title:"Indian History — Complete Timeline",cat:"history",exam:"ssc",section:"notes",type:"text",icon:"🏛️",content:`<h2 style="font-family:'Baloo 2',sans-serif;color:#07090F;margin-bottom:8px">Indian History</h2><p style="color:#64748B;margin-bottom:16px;font-size:14px">SSC CGL Tier 1 aur Railway NTPC dono mein 4-5 sawaal aate hain.</p><h3 style="color:#1847CC;font-family:'Baloo 2',sans-serif;margin-bottom:10px">🏹 Ancient India</h3><ul style="padding-left:18px;margin-bottom:16px"><li style="margin-bottom:8px;font-size:14px"><strong>Indus Valley:</strong> 2500-1750 BC — Harappa, Mohenjo-daro</li><li style="margin-bottom:8px;font-size:14px"><strong>Maurya Dynasty:</strong> Chandragupta Maurya (322 BC)</li><li style="margin-bottom:8px;font-size:14px"><strong>Ashoka:</strong> Kalinga Yudh 261 BC → Buddhism apnaaya</li><li style="margin-bottom:8px;font-size:14px"><strong>Gupta Period:</strong> "Golden Age" — Chandragupta I (320 AD)</li></ul><h3 style="color:#1847CC;font-family:'Baloo 2',sans-serif;margin-bottom:10px">🕌 Medieval India</h3><ul style="padding-left:18px;margin-bottom:16px"><li style="margin-bottom:8px;font-size:14px"><strong>Mughal Order:</strong> Babur→Humayun→Akbar→Jahangir→Shah Jahan→Aurangzeb</li><li style="margin-bottom:8px;font-size:14px"><strong>Panipat 1st:</strong> 1526 — Babur ne Ibrahim Lodi ko haraaya</li><li style="margin-bottom:8px;font-size:14px"><strong>Shivaji:</strong> Maratha Empire ke founder</li></ul><h3 style="color:#1847CC;font-family:'Baloo 2',sans-serif;margin-bottom:10px">🇮🇳 Freedom Struggle</h3><ul style="padding-left:18px"><li style="margin-bottom:6px;font-size:14px">1857 — Pratham Swatantrata Sangram</li><li style="margin-bottom:6px;font-size:14px">1885 — INC ki sthapana (A.O. Hume)</li><li style="margin-bottom:6px;font-size:14px">1919 — Jallianwala Bagh Hatyakand</li><li style="margin-bottom:6px;font-size:14px">1930 — Dandi March (Salt Satyagraha)</li><li style="margin-bottom:6px;font-size:14px">1942 — Quit India Movement</li><li style="margin-bottom:6px;font-size:14px"><strong>15 August 1947 — Swatantrata! 🇮🇳</strong></li></ul>`},
+  {title:"Railway — Complete Facts & Signals",cat:"gk",exam:"railway",section:"notes",type:"text",icon:"🚂",content:`<h2 style="font-family:'Baloo 2',sans-serif;color:#07090F;margin-bottom:8px">Indian Railways — All Important Facts</h2><p style="color:#64748B;margin-bottom:16px;font-size:14px">Railway RRB NTPC, Group D, ALP sab mein Railway GK se sawaal aate hain.</p><h3 style="color:#1847CC;font-family:'Baloo 2',sans-serif;margin-bottom:10px">🚂 Basic Facts</h3><ul style="padding-left:18px;margin-bottom:16px"><li style="margin-bottom:8px;font-size:14px"><strong>Sthapana:</strong> 16 April 1853 (Mumbai→Thane, 34km)</li><li style="margin-bottom:8px;font-size:14px"><strong>Network Rank:</strong> World ka 4th largest</li><li style="margin-bottom:8px;font-size:14px"><strong>Total Zones:</strong> 18 Zones</li><li style="margin-bottom:8px;font-size:14px"><strong>Headquarter:</strong> New Delhi</li><li style="margin-bottom:8px;font-size:14px"><strong>Pehli Electric Train:</strong> 3 Feb 1925 (Bombay VT → Kurla)</li><li style="margin-bottom:8px;font-size:14px"><strong>Sabse Tez:</strong> Vande Bharat Express (180 kmph)</li></ul><h3 style="color:#1847CC;font-family:'Baloo 2',sans-serif;margin-bottom:10px">🚦 Signal Colors</h3><ul style="padding-left:18px;margin-bottom:16px"><li style="margin-bottom:8px;font-size:14px"><span style="color:#10B981;font-weight:700">Green</span> — Line clear, proceed at full speed</li><li style="margin-bottom:8px;font-size:14px"><span style="color:#F59E0B;font-weight:700">Yellow</span> — Caution, next signal may be red</li><li style="margin-bottom:8px;font-size:14px"><span style="color:#EF4444;font-weight:700">Red</span> — Stop absolutely</li><li style="margin-bottom:8px;font-size:14px"><span style="color:#8B5CF6;font-weight:700">Double Yellow</span> — Proceed cautiously</li></ul>`},
+  {title:"Reasoning — Coding Decoding Master",cat:"reasoning",exam:"ssc",section:"notes",type:"text",icon:"🧠",content:`<h2 style="font-family:'Baloo 2',sans-serif;color:#07090F;margin-bottom:8px">Coding-Decoding — Complete Guide</h2><p style="color:#64748B;margin-bottom:16px;font-size:14px">SSC aur Railway mein Reasoning se 25-30 sawaal aate hain. Coding-Decoding se 2-3 pakke.</p><h3 style="color:#1847CC;font-family:'Baloo 2',sans-serif;margin-bottom:10px">📌 Types of Coding</h3><ul style="padding-left:18px;margin-bottom:16px"><li style="margin-bottom:8px;font-size:14px"><strong>Letter Coding:</strong> A=1, B=2... ya A=Z, B=Y (reverse)</li><li style="margin-bottom:8px;font-size:14px"><strong>Number Coding:</strong> Words ko numbers mein</li><li style="margin-bottom:8px;font-size:14px"><strong>+/- Shift:</strong> Har letter mein +1, +2 etc add karo</li><li style="margin-bottom:8px;font-size:14px"><strong>Mixed:</strong> Letter + Number combination</li></ul><div style="background:#FFF7F0;border-left:4px solid #FF6B00;padding:14px 16px;border-radius:0 12px 12px 0;margin:14px 0"><p style="font-weight:700;font-size:14px;margin-bottom:6px">🔑 Example:</p><p style="font-size:13px;line-height:1.8">MANGO = NBOHI (har letter +1)<br>A→B, P→Q, P→Q, L→M, E→F<br>APPLE = <strong>BQQMF</strong></p></div><div style="background:#D1FAE5;border-radius:12px;padding:14px;margin-top:14px"><p style="color:#065F46;font-weight:600;font-size:13px">✅ Tip: Pehle pattern dhundho, phir apply karo. Ek question mein ek hi pattern hoga!</p></div>`},
+  {title:"Indian Constitution — Key Articles",cat:"polity",exam:"ssc",section:"notes",type:"text",icon:"📜",content:`<h2 style="font-family:'Baloo 2',sans-serif;color:#07090F;margin-bottom:8px">Indian Constitution — Most Important</h2><p style="color:#64748B;margin-bottom:16px;font-size:14px">SSC CGL aur Railway NTPC mein Polity se 3-4 sawaal aate hain.</p><h3 style="color:#1847CC;font-family:'Baloo 2',sans-serif;margin-bottom:10px">📌 Basic Facts</h3><ul style="padding-left:18px;margin-bottom:16px"><li style="margin-bottom:8px;font-size:14px">Samvidhan: 26 Nov 1949 ko pass, <strong>26 Jan 1950 ko lagu</strong></li><li style="margin-bottom:8px;font-size:14px">Constituent Assembly: Dr. B.R. Ambedkar (Chairman, Drafting Committee)</li><li style="margin-bottom:8px;font-size:14px">Pehle Rashtrapati: <strong>Dr. Rajendra Prasad</strong></li><li style="margin-bottom:8px;font-size:14px">Pehle PM: <strong>Pandit Jawaharlal Nehru</strong></li><li style="margin-bottom:8px;font-size:14px">Lok Sabha: Maximum 552 members</li><li style="margin-bottom:8px;font-size:14px">Rajya Sabha: Maximum 250 members</li></ul><h3 style="color:#1847CC;font-family:'Baloo 2',sans-serif;margin-bottom:10px">📌 Important Articles</h3><ul style="padding-left:18px"><li style="margin-bottom:6px;font-size:14px"><strong>Art. 14</strong> — Equality before law</li><li style="margin-bottom:6px;font-size:14px"><strong>Art. 19</strong> — Freedom of speech</li><li style="margin-bottom:6px;font-size:14px"><strong>Art. 21</strong> — Right to life</li><li style="margin-bottom:6px;font-size:14px"><strong>Art. 32</strong> — Right to constitutional remedies</li><li style="margin-bottom:6px;font-size:14px"><strong>Art. 44</strong> — Uniform Civil Code</li><li style="margin-bottom:6px;font-size:14px"><strong>Art. 370</strong> — Special status J&K (ab abrogated)</li></ul>`}
+];
+
+const DEF_QUIZZES = [
+  {title:"SSC Math — Profit & Loss",exam:"ssc",cat:"math",diff:"Medium",questions:[
+    {q:"Rs.800 mein kharida, Rs.1000 mein becha. Profit%?",opts:["20%","25%","30%","15%"],ans:1,exp:"P%=(200/800)×100=25%"},
+    {q:"SP=Rs.480, Loss%=20%. CP?",opts:["Rs.560","Rs.600","Rs.640","Rs.580"],ans:1,exp:"CP=480×100/80=Rs.600"},
+    {q:"15% profit pe Rs.1150 milte hain. CP?",opts:["Rs.900","Rs.1000","Rs.950","Rs.1100"],ans:1,exp:"CP=1150×100/115=Rs.1000"},
+    {q:"CP:SP=5:6. Profit%?",opts:["15%","18%","20%","25%"],ans:2,exp:"P%=(1/5)×100=20%"},
+    {q:"20% profit aur 20% loss dono pe same item becho toh?",opts:["No loss no profit","1% profit","1% loss","4% loss"],ans:2,exp:"Loss%=(20)²/100=4%... wait: formula hai (common%)²/100 = 4% loss"},
+  ]},
+  {title:"Railway GK — Indian Railways",exam:"railway",cat:"gk",diff:"Easy",questions:[
+    {q:"Indian Railways ki sthapana kab hui?",opts:["1853","1857","1861","1869"],ans:0,exp:"16 April 1853 — Mumbai se Thane tak pehli train."},
+    {q:"Total railway zones kitne hain?",opts:["14","16","18","20"],ans:2,exp:"18 zones hain abhi."},
+    {q:"India ki sabse tez train?",opts:["Rajdhani","Shatabdi","Vande Bharat","Duronto"],ans:2,exp:"Vande Bharat Express — 180 kmph design speed."},
+    {q:"Railway Board headquarter?",opts:["Mumbai","Kolkata","New Delhi","Chennai"],ans:2,exp:"New Delhi mein hai."},
+    {q:"Pehli electric train kab chali?",opts:["1925","1930","1935","1940"],ans:0,exp:"3 Feb 1925 — Bombay VT to Kurla."},
+  ]},
+  {title:"SSC Reasoning — Coding Decoding",exam:"ssc",cat:"reasoning",diff:"Medium",questions:[
+    {q:"MANGO ko NBOHI likha jaye toh APPLE=?",opts:["BQQMF","CQQNG","BQQMG","BQPMF"],ans:0,exp:"+1 shift: A→B, P→Q, P→Q, L→M, E→F = BQQMF"},
+    {q:"2, 4, 8, 16, ?",opts:["24","28","32","30"],ans:2,exp:"×2 pattern: 16×2=32"},
+    {q:"1, 4, 9, 16, 25, ?",opts:["30","36","42","49"],ans:1,exp:"Perfect squares: 6²=36"},
+    {q:"A, C, E, G, ?",opts:["H","I","J","K"],ans:1,exp:"+2 skip: G ke baad I"},
+    {q:"Agar NORTH=56782 toh HORN=?",opts:["8256","2568","8526","5628"],ans:0,exp:"N=5,O=6,R=7,T=8,H=2 → H=2,O=6,R=7,N=5 = ... check mapping"},
+  ]},
+  {title:"General Science — Physics Basics",exam:"railway",cat:"science",diff:"Easy",questions:[
+    {q:"Newton ke motion ka pehla niyam kya kehta hai?",opts:["F=ma","Inertia ka niyam","Action-Reaction","Conservation of Energy"],ans:1,exp:"Pehla niyam: Inertia — koi object tab tak apni state nahi badlega jab tak uspe force na lage."},
+    {q:"Prism se light pass hoti hai toh kya hota hai?",opts:["Reflection","Refraction","Dispersion","Absorption"],ans:2,exp:"Dispersion — white light 7 rang mein batt jaati hai (VIBGYOR)."},
+    {q:"Sound ki speed hawa mein approximately?",opts:["300 m/s","343 m/s","400 m/s","500 m/s"],ans:1,exp:"Sound 343 m/s (20°C pe) ki speed se hawa mein travel karti hai."},
+    {q:"SI unit of Force?",opts:["Joule","Watt","Newton","Pascal"],ans:2,exp:"Force ka SI unit Newton (N) hai. F=ma."},
+    {q:"Ohm's Law: V=?",opts:["I/R","IR","I+R","I²R"],ans:1,exp:"V=IR — Voltage = Current × Resistance (Ohm's Law)."},
+  ]},
+  {title:"Indian Polity — Constitution",exam:"ssc",cat:"polity",diff:"Hard",questions:[
+    {q:"Bharat ka Samvidhan kab lagu hua?",opts:["15 Aug 1947","26 Nov 1949","26 Jan 1950","2 Oct 1950"],ans:2,exp:"Samvidhan 26 Nov 1949 ko pass hua lekin 26 Jan 1950 ko lagu hua."},
+    {q:"Rashtrapati ka karyakaal?",opts:["4 saal","5 saal","6 saal","7 saal"],ans:1,exp:"5 saal ka karyakaal hota hai Rashtrapati ka."},
+    {q:"Lok Sabha mein maximum members?",opts:["542","545","550","552"],ans:3,exp:"Maximum 552 members ho sakte hain (530+20+2 Anglo-Indian)."},
+    {q:"Pehle Rashtrapati?",opts:["Nehru","Ambedkar","Rajendra Prasad","Radhakrishnan"],ans:2,exp:"Dr. Rajendra Prasad — 1950 se 1962 tak Rashtrapati rahe."},
+    {q:"Fundamental Rights Samvidhan ke kis Part mein?",opts:["Part II","Part III","Part IV","Part V"],ans:1,exp:"Part III (Articles 12-35) mein Fundamental Rights hain."},
+  ]}
+];
+
+const DEF_CA = [
+  {title:"Bharat ne ISRO ke nayi mission launch ki",desc:"India Space Research Organisation ne 2025 mein Chandrayaan-4 mission ki planning announce ki. Yeh mission lunar sample return ke liye hoga.",cat:"national",tags:["SSC","Railway","Science"],date:"2025-05-10"},
+  {title:"India GDP Growth Rate 2024-25",desc:"IMF ke anusar India ki GDP growth rate 2024-25 mein 6.8% rahi, jo duniya ki sabse tez growing major economy hai.",cat:"economy",tags:["SSC","Economy"],date:"2025-04-15"},
+  {title:"India ne Cricket World Cup jeet liya",desc:"Team India ne 2024 T20 World Cup final mein South Africa ko 7 runs se haraaya. Rohit Sharma ki captaincy mein yeh India ka doosra T20 WC title hai.",cat:"sports",tags:["Railway","SSC","Sports"],date:"2024-06-29"},
+];
+
+// EXPOSE
+window.switchTab=switchTab; window.doLogin=doLogin; window.doRegister=doRegister; window.doLogout=doLogout;
+window.showPage=showPage; window.goExam=goExam; window.filterContent=filterContent; window.filterQuiz=filterQuiz;
+window.filterMock=filterMock; window.openNote=openNote; window.closeReader=closeReader;
+window.startQuiz=startQuiz; window.nextQ=nextQ; window.submitQuiz=submitQuiz;
+window.retryQuiz=retryQuiz; window.backHome=backHome; window.switchAdmin=switchAdmin;
+window.doUpload=doUpload; window.saveCA=saveCA; window.saveQuiz=saveQuiz;
+window.addQField=addQField; window.selType=selType; window.clearFile=clearFile;
+window.dragOv=dragOv; window.dragLv=dragLv; window.dropF=dropF; window.fileSel=fileSel;
+window.deleteItem=deleteItem;
+
+// AUTH
+onAuthStateChanged(auth, async(u)=>{
+  if(u){
+    user=u; isAdmin=u.email.toLowerCase()===ADMIN_EMAIL.toLowerCase();
+    await loadUdata(); await loadAll(); showApp();
+  } else { showLogin(); }
+});
+
+async function loadUdata(){
+  const s=await getDoc(doc(db,"users",user.uid));
+  if(s.exists()) udata=s.data();
+}
+
+async function loadAll(){
+  allNotes=[]; allQuizzes=[]; allCA=[];
+  const [ns,qs,cs]=await Promise.all([getDocs(collection(db,"notes")),getDocs(collection(db,"quizzes")),getDocs(collection(db,"ca"))]);
+  ns.forEach(d=>allNotes.push({id:d.id,...d.data()}));
+  qs.forEach(d=>allQuizzes.push({id:d.id,...d.data()}));
+  cs.forEach(d=>allCA.push({id:d.id,...d.data()}));
+  if(!allNotes.length) for(const n of DEF_NOTES){const r=await addDoc(collection(db,"notes"),{...n,createdAt:new Date().toISOString()});allNotes.push({id:r.id,...n});}
+  if(!allQuizzes.length) for(const q of DEF_QUIZZES){const r=await addDoc(collection(db,"quizzes"),{...q,createdAt:new Date().toISOString()});allQuizzes.push({id:r.id,...q});}
+  if(!allCA.length) for(const c of DEF_CA){const r=await addDoc(collection(db,"ca"),{...c,createdAt:new Date().toISOString()});allCA.push({id:r.id,...c});}
+}
+
+function switchTab(t){
+  document.getElementById('lForm').style.display=t==='login'?'block':'none';
+  document.getElementById('rForm').style.display=t==='register'?'block':'none';
+  document.querySelectorAll('.tsw').forEach((b,i)=>b.classList.toggle('on',i===(t==='login'?0:1)));
+}
+
+async function doLogin(){
+  const e=document.getElementById('lEmail').value.trim(), p=document.getElementById('lPass').value;
+  const b=document.getElementById('lBtn'), err=document.getElementById('lErr');
+  if(!e||!p){showErr(err,'Email aur password zaroor bharein');return;}
+  b.disabled=true; b.textContent='Login ho raha hai...';
+  try{await signInWithEmailAndPassword(auth,e,p);}
+  catch(ex){b.disabled=false;b.textContent='Login करें →';const m={'auth/invalid-credential':'Email ya password galat hai','auth/too-many-requests':'Thodi der baad try karo'};showErr(err,m[ex.code]||'Login failed');}
+}
+
+async function doRegister(){
+  const n=document.getElementById('rName').value.trim(), e=document.getElementById('rEmail').value.trim();
+  const ex=document.getElementById('rExam').value, p=document.getElementById('rPass').value;
+  const b=document.getElementById('rBtn'), err=document.getElementById('rErr');
+  if(!n||!e||!p){showErr(err,'Sab fields bharein');return;}
+  if(p.length<6){showErr(err,'Password minimum 6 characters ka hona chahiye');return;}
+  b.disabled=true; b.textContent='Register ho raha hai...';
+  try{
+    const c=await createUserWithEmailAndPassword(auth,e,p);
+    await setDoc(doc(db,"users",c.user.uid),{name:n,email:e,exam:ex,uid:c.user.uid,quizCount:0,bestScore:0,notesRead:0,totalPoints:0,joinedAt:new Date().toISOString()});
+  }catch(ex2){b.disabled=false;b.textContent='Register करें →';const m={'auth/email-already-in-use':'Email already registered hai','auth/weak-password':'Password zyada strong chahiye'};showErr(err,m[ex2.code]||'Registration failed');}
+}
+
+async function doLogout(){await signOut(auth);}
+function showErr(el,msg){el.textContent=msg;el.classList.add('show');setTimeout(()=>el.classList.remove('show'),4000);}
+
+function showApp(){
+  document.getElementById('loadingScreen').style.display='none';
+  document.getElementById('loginScreen').classList.remove('active');
+  document.getElementById('appScreen').classList.add('active');
+  const name=udata?.name||user.email.split('@')[0];
+  document.getElementById('tbUser').textContent=name;
+  document.getElementById('heroName').textContent=name;
+  document.getElementById('heroTarget').textContent='🎯 '+(udata?.exam||'SSC CGL');
+  document.getElementById('stQuiz').textContent=udata?.quizCount||0;
+  document.getElementById('stBest').textContent=(udata?.bestScore||0)+'%';
+  document.getElementById('stNotes').textContent=udata?.notesRead||0;
+  document.getElementById('stPts').textContent=udata?.totalPoints||0;
+  if(isAdmin){document.getElementById('bn-admin').style.display='flex';}
+  renderNotes('all'); renderQuizzes('all'); renderCA('all'); renderMock('all'); renderEbooks('all');
+  addQField();
+}
+
+function showLogin(){
+  document.getElementById('loadingScreen').style.display='none';
+  document.getElementById('loginScreen').classList.add('active');
+}
+
+// NAVIGATION
+function showPage(pid){
+  document.querySelectorAll('.pg').forEach(p=>p.classList.remove('on'));
+  document.getElementById(pid)?.classList.add('on');
+  const map={pgHome:'bn-home',pgNotes:'bn-notes',pgQuiz:'bn-quiz',pgEbooks:'bn-ebooks',pgProgress:'bn-progress',pgAdmin:'bn-admin'};
+  document.querySelectorAll('.bni').forEach(n=>n.classList.remove('on'));
+  if(map[pid]) document.getElementById(map[pid])?.classList.add('on');
+  if(pid==='pgProgress') renderProgress();
+  if(pid==='pgAdmin'){loadAdminData(); renderManage();}
+  window.scrollTo(0,0);
+}
+
+function goExam(exam){
+  showPage('pgNotes');
+  document.querySelectorAll('#notesTabs .ftab').forEach(b=>{
+    b.classList.toggle('on',b.textContent.toLowerCase()===exam||b.getAttribute('onclick')?.includes(`'${exam}'`));
+  });
+  renderNotes(exam);
+}
+
+// NOTES
+function getIcon(type){const m={pdf:'📄',img:'🖼️',video:'🎥',html:'🌐',doc:'📝',text:'📖',ebook:'📚'};return m[type]||'📄';}
+function getTypeColor(type){const m={pdf:'pdf',img:'img',video:'video',html:'html',doc:'text',text:'text',ebook:'ebook'};return m[type]||'text';}
+
+function renderNotes(filter){
+  const grid=document.getElementById('notesGrid');
+  const items=allNotes.filter(n=>n.section==='notes');
+  const filtered=filter==='all'?items:items.filter(n=>n.exam===filter||n.cat===filter);
+  if(!filtered.length){grid.innerHTML='<div class="empty2"><div class="empty2-icon">📭</div><div class="empty2-text">Koi notes nahi mila</div></div>';return;}
+  grid.innerHTML=filtered.map(n=>`<div class="ccard" onclick="openNote('${n.id}')">
+    <div class="ccard-icon ${getTypeColor(n.type||'text')}">${getIcon(n.type||'text')}</div>
+    <div class="ccard-info">
+      <div class="ccard-title">${n.title}</div>
+      <div class="ccard-meta">${n.cat||''} • ${n.exam||''}</div>
+      <div class="ccard-tags"><span class="ctag ${n.exam}">${(n.exam||'').toUpperCase()}</span><span class="ctag type">${(n.type||'text').toUpperCase()}</span></div>
+    </div>
+    <div class="ccard-arr">›</div>
+  </div>`).join('');
+}
+
+function filterContent(sec,filter,btn){
+  const container=sec==='notes'?'#notesTabs':sec==='ebooks'?'.ebook-grid':'.ftabs';
+  btn.closest('.ftabs')?.querySelectorAll('.ftab').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  if(sec==='notes') renderNotes(filter);
+  else if(sec==='ebooks') renderEbooks(filter);
+  else if(sec==='ca') renderCA(filter);
+}
+
+async function openNote(id){
+  const n=allNotes.find(x=>x.id===id);
+  if(!n) return;
+  document.getElementById('nrTitle').textContent=n.title;
+  const body=document.getElementById('nrBody');
+  const t=n.type||'text';
+  if(t==='pdf'&&n.fileUrl) body.innerHTML=`<p style="font-size:12px;color:var(--muted);margin-bottom:12px">📄 <a href="${n.fileUrl}" target="_blank" style="color:var(--blue);font-weight:700">New tab mein kholein ↗</a></p><iframe class="content-iframe" src="${n.fileUrl}"></iframe>`;
+  else if(t==='img'&&n.fileUrl) body.innerHTML=`<img class="content-img" src="${n.fileUrl}" alt="${n.title}">`;
+  else if(t==='video'&&n.fileUrl){
+    const isYT=n.fileUrl.includes('youtube')||n.fileUrl.includes('youtu.be');
+    const src=isYT?n.fileUrl.replace('watch?v=','embed/').replace('youtu.be/','youtube.com/embed/'):n.fileUrl;
+    body.innerHTML=`<div class="content-video"><iframe src="${src}" allowfullscreen></iframe></div>`;
+  }
+  else if(t==='html'&&n.fileUrl) body.innerHTML=`<iframe class="content-iframe" src="${n.fileUrl}" sandbox="allow-scripts allow-same-origin"></iframe>`;
+  else if(t==='doc'&&n.fileUrl) body.innerHTML=`<div class="dl-box"><div class="dl-icon">📝</div><div class="dl-title">${n.title}</div><p style="color:var(--muted);font-size:13px;margin-bottom:16px">Word document download karo</p><a href="${n.fileUrl}" download class="dl-btn">⬇️ Download Karo</a></div>`;
+  else body.innerHTML=n.content||'<p style="color:var(--muted)">Content nahi mila</p>';
+  document.getElementById('noteReader').style.display='block';
+  if(user){await updateDoc(doc(db,"users",user.uid),{notesRead:increment(1)});if(udata)udata.notesRead=(udata.notesRead||0)+1;document.getElementById('stNotes').textContent=udata?.notesRead||0;}
+}
+
+function closeReader(){document.getElementById('noteReader').style.display='none';}
+
+// EBOOKS
+function renderEbooks(filter){
+  const grid=document.getElementById('ebooksGrid');
+  const items=allNotes.filter(n=>n.section==='ebook');
+  const filtered=filter==='all'?items:items.filter(n=>n.exam===filter||n.cat===filter);
+  if(!filtered.length){grid.innerHTML='<div class="empty2" style="grid-column:span 2"><div class="empty2-icon">📚</div><div class="empty2-text">Admin se ebooks upload karwao</div></div>';return;}
+  const colors=['#FF6B00','#1847CC','#7C3AED','#10B981','#EC4899','#F59E0B'];
+  grid.innerHTML=filtered.map((n,i)=>`<div class="ebook-card" onclick="openNote('${n.id}')">
+    <div class="ebook-cover" style="background:linear-gradient(135deg,${colors[i%colors.length]},${colors[(i+1)%colors.length]})">📚</div>
+    <div class="ebook-title">${n.title}</div>
+    <div class="ebook-sub">${n.cat||''} • ${n.exam||''}</div>
+    <button class="ebook-btn">📖 Open</button>
+  </div>`).join('');
+}
+
+// QUIZZES
+function renderQuizzes(filter){
+  const grid=document.getElementById('quizGrid');
+  const filtered=filter==='all'?allQuizzes:allQuizzes.filter(q=>q.exam===filter||q.cat===filter);
+  if(!filtered.length){grid.innerHTML='<div class="empty2"><div class="empty2-icon">📝</div><div class="empty2-text">Koi quiz nahi</div></div>';return;}
+  grid.innerHTML=filtered.map(q=>`<div class="qzcard">
+    <div class="qzcard-top"><div class="qzcard-title">${q.title}</div><span class="diff-badge diff-${q.diff}">${q.diff}</span></div>
+    <div class="qzcard-info"><span>📝 ${q.questions?.length||0} Sawaal</span><span>⏱ 30s/Q</span><span>📊 ${q.cat||''}</span></div>
+    <div class="qzcard-tags"><span class="ctag ${q.exam}">${(q.exam||'').toUpperCase()}</span></div>
+    <button class="start-qz" onclick="startQuiz('${q.id}')">🚀 Start Quiz</button>
+  </div>`).join('');
+}
+
+function filterQuiz(filter,btn){
+  btn.closest('.ftabs').querySelectorAll('.ftab').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on'); renderQuizzes(filter);
+}
+
+// CURRENT AFFAIRS
+function renderCA(filter){
+  const grid=document.getElementById('caGrid');
+  const filtered=filter==='all'?allCA:allCA.filter(c=>c.cat===filter);
+  if(!filtered.length){grid.innerHTML='<div class="empty2"><div class="empty2-icon">📰</div><div class="empty2-text">Admin se current affairs add karwao</div></div>';return;}
+  grid.innerHTML=filtered.map(c=>`<div class="ca-card">
+    <div class="ca-date">📅 ${c.date||'Latest'}</div>
+    <div class="ca-title">${c.title}</div>
+    <div class="ca-desc">${c.desc}</div>
+    <div class="ca-tags">${(c.tags||[]).map(t=>`<span class="ctag ssc">${t}</span>`).join('')}</div>
+  </div>`).join('');
+}
+
+// MOCK TEST
+function renderMock(filter){
+  const grid=document.getElementById('mockGrid');
+  const mockData=allQuizzes.filter(q=>q.questions?.length>=5);
+  const filtered=filter==='all'?mockData:mockData.filter(q=>q.exam===filter);
+  if(!filtered.length){grid.innerHTML='<div class="empty2"><div class="empty2-icon">🎯</div><div class="empty2-text">Mock tests jald aa rahe hain!</div></div>';return;}
+  grid.innerHTML=filtered.map(q=>`<div class="mock-card" onclick="startQuiz('${q.id}')">
+    <div class="mock-title">${q.title}</div>
+    <div class="mock-info"><span>📝 ${q.questions?.length} Questions</span><span>⏱ ${q.questions?.length*0.5} Minutes</span><span>📊 ${(q.diff||'').toUpperCase()}</span></div>
+    <div class="mock-btn">🚀 Start Test</div>
+  </div>`).join('');
+}
+
+function filterMock(filter,btn){btn.closest('.ftabs').querySelectorAll('.ftab').forEach(b=>b.classList.remove('on'));btn.classList.add('on');renderMock(filter);}
+
+// QUIZ ACTIVE
+function startQuiz(id){
+  curQuiz=allQuizzes.find(q=>q.id===id);
+  if(!curQuiz) return;
+  curQ=0; correct=0; wrong=0; pts=0;
+  document.getElementById('quizActive').style.display='block';
+  document.body.style.overflow='hidden';
+  showQ();
+}
+
+function showQ(){
+  answered=false; clearInterval(tmr);
+  const q=curQuiz.questions[curQ], tot=curQuiz.questions.length;
+  document.getElementById('qaInfo').textContent=`Q ${curQ+1} / ${tot}`;
+  document.getElementById('qaFill').style.width=`${((curQ+1)/tot)*100}%`;
+  document.getElementById('qaQnum').textContent=`QUESTION ${curQ+1} OF ${tot}`;
+  document.getElementById('qaQtext').textContent=q.q;
+  document.getElementById('qaExp').style.display='none';
+  document.getElementById('qaNext').style.display='none';
+  document.getElementById('qaSubmit').style.display='none';
+  const timer=document.getElementById('qaTimer');
+  timer.classList.remove('urgent');
+  document.getElementById('qaOpts').innerHTML=q.opts.map((o,i)=>`<button class="qa-opt" onclick="selAns(${i})"><div class="qa-opt-letter">${'ABCD'[i]}</div>${o}</button>`).join('');
+  tLeft=30; timer.textContent=`⏱ ${tLeft}s`;
+  tmr=setInterval(()=>{tLeft--;timer.textContent=`⏱ ${tLeft}s`;if(tLeft<=5)timer.classList.add('urgent');if(tLeft<=0){clearInterval(tmr);if(!answered)autoExp();}},1000);
+}
+
+window.selAns=function(idx){
+  if(answered) return;
+  answered=true; clearInterval(tmr);
+  const q=curQuiz.questions[curQ];
+  document.querySelectorAll('.qa-opt').forEach(b=>b.classList.add('locked'));
+  const opts=document.querySelectorAll('.qa-opt');
+  opts[q.ans].classList.add('correct');
+  if(idx!==q.ans){opts[idx].classList.add('wrong');wrong++;}else{correct++;pts+=10;}
+  document.getElementById('qaExpText').textContent=q.exp||'';
+  document.getElementById('qaExp').style.display='block';
+  const isLast=curQ>=curQuiz.questions.length-1;
+  document.getElementById(isLast?'qaSubmit':'qaNext').style.display='block';
+};
+
+function autoExp(){
+  answered=true; wrong++;
+  const q=curQuiz.questions[curQ];
+  document.querySelectorAll('.qa-opt').forEach(b=>b.classList.add('locked'));
+  document.querySelectorAll('.qa-opt')[q.ans]?.classList.add('correct');
+  document.getElementById('qaExpText').textContent='⏰ Time out! '+q.exp;
+  document.getElementById('qaExp').style.display='block';
+  const isLast=curQ>=curQuiz.questions.length-1;
+  document.getElementById(isLast?'qaSubmit':'qaNext').style.display='block';
+}
+
+function nextQ(){curQ++;showQ();}
+
+async function submitQuiz(){
+  clearInterval(tmr);
+  document.getElementById('quizActive').style.display='none';
+  document.body.style.overflow='';
+  const tot=curQuiz.questions.length, pct=Math.round((correct/tot)*100);
+  if(user){
+    await addDoc(collection(db,"users",user.uid,"results"),{quizTitle:curQuiz.title,correct,wrong,score:pts,pct,total:tot,date:new Date().toISOString()});
+    const best=Math.max(udata?.bestScore||0,pct);
+    await updateDoc(doc(db,"users",user.uid),{quizCount:increment(1),bestScore:best,totalPoints:increment(pts)});
+    if(udata){udata.quizCount=(udata.quizCount||0)+1;udata.bestScore=best;udata.totalPoints=(udata.totalPoints||0)+pts;}
+    document.getElementById('stQuiz').textContent=udata?.quizCount||0;
+    document.getElementById('stBest').textContent=(udata?.bestScore||0)+'%';
+    document.getElementById('stPts').textContent=udata?.totalPoints||0;
+  }
+  showResult(pct);
+}
+
+function showResult(pct){
+  const g=pct>=70?'good':pct>=40?'ok':'bad';
+  const msg=pct>=70?'🏆 Shabash! Excellent!':pct>=40?'📈 Acha kiya! Aur karo!':'💪 Practice karo aur wapas ao!';
+  document.querySelectorAll('.pg').forEach(p=>p.classList.remove('on'));
+  const el=document.createElement('div');
+  el.className='pg on'; el.id='pgResult';
+  el.innerHTML=`<div class="result-wrap">
+    <div class="res-circle ${g}"><div class="res-pct">${pct}%</div><div class="res-lbl">Score</div></div>
+    <div class="res-title">${msg}</div><div class="res-sub">${curQuiz.title}</div>
+    <div class="res-stats">
+      <div class="rs2"><div class="rs2-val c">${correct}</div><div class="rs2-lbl">✅ Sahi</div></div>
+      <div class="rs2"><div class="rs2-val w">${wrong}</div><div class="rs2-lbl">❌ Galat</div></div>
+      <div class="rs2"><div class="rs2-val s">${pts}</div><div class="rs2-lbl">⭐ Points</div></div>
+    </div>
+    <div class="res-btns"><button class="res-retry" onclick="retryQuiz()">🔄 Dobara</button><button class="res-home" onclick="backHome()">🏠 Home</button></div>
+  </div>`;
+  document.getElementById('appScreen').insertBefore(el,document.querySelector('.botbar'));
+}
+
+function retryQuiz(){document.getElementById('pgResult')?.remove();startQuiz(curQuiz.id);}
+function backHome(){document.getElementById('pgResult')?.remove();showPage('pgHome');}
+
+// PROGRESS
+async function renderProgress(){
+  const list=document.getElementById('progressList');
+  if(!user) return;
+  try{
+    const snap=await getDocs(query(collection(db,"users",user.uid,"results"),orderBy("date","desc")));
+    if(snap.empty){list.innerHTML='<div class="empty2"><div class="empty2-icon">📊</div><div class="empty2-text">Abhi koi quiz nahi diya</div></div>';return;}
+    const docs=snap.docs.map(d=>d.data());
+    const avgPct=Math.round(docs.reduce((a,r)=>a+r.pct,0)/docs.length);
+    document.getElementById('progPct').textContent=avgPct+'%';
+    list.innerHTML=docs.map(r=>{
+      const g=r.pct>=70?'hs-good':r.pct>=40?'hs-ok':'hs-bad';
+      const date=new Date(r.date).toLocaleDateString('hi-IN');
+      return `<div class="hist-card"><div class="hist-score ${g}">${r.pct}%</div><div class="hist-info"><div class="hist-title">${r.quizTitle}</div><div class="hist-meta">✅ ${r.correct} Sahi · ❌ ${r.wrong} Galat · ⭐ ${r.score} pts · 📅 ${date}</div></div></div>`;
+    }).join('');
+  }catch(e){list.innerHTML='<div class="empty2"><div class="empty2-icon">⚠️</div><div class="empty2-text">Data load nahi hua</div></div>';}
+}
+
+// ADMIN
+async function loadAdminData(){
+  const us=await getDocs(collection(db,"users"));
+  document.getElementById('adStudents').textContent=us.size;
+  document.getElementById('adContent').textContent=allNotes.length+allQuizzes.length+allCA.length;
+}
+
+function switchAdmin(sec,btn){
+  document.querySelectorAll('.atab2').forEach(b=>b.classList.remove('on'));
+  document.querySelectorAll('.asec2').forEach(s=>s.classList.remove('on'));
+  btn.classList.add('on');
+  document.getElementById('asec-'+sec)?.classList.add('on');
+  if(sec==='manage') renderManage();
+  if(sec==='students') loadStudents();
+}
+
+// FILE UPLOAD (CLOUDINARY)
+function selType(type,btn){
+  selType2=type;
+  document.querySelectorAll('#typeSelector button').forEach(b=>b.style.opacity='0.5');
+  btn.style.opacity='1'; btn.style.transform='scale(1.05)';
+}
+
+function dragOv(e){e.preventDefault();document.getElementById('dropZone').classList.add('drag');}
+function dragLv(){document.getElementById('dropZone').classList.remove('drag');}
+function dropF(e){e.preventDefault();dragLv();const f=e.dataTransfer.files[0];if(f)fileSel(f);}
+
+function fileSel(file){
+  if(!file) return;
+  selFile=file;
+  const icons={pdf:'📄',image:'🖼️',video:'🎥',html:'🌐',doc:'📝'};
+  const typeKey=file.type.includes('pdf')?'pdf':file.type.includes('image')?'image':file.type.includes('video')?'video':file.type.includes('html')?'html':'doc';
+  document.getElementById('fpIcon').textContent=icons[typeKey]||'📎';
+  document.getElementById('fpName').textContent=file.name;
+  document.getElementById('fpSize').textContent=(file.size/1024).toFixed(1)+' KB';
+  document.getElementById('filePrev').classList.add('show');
+  document.getElementById('upBtn').disabled=false;
+  if(!document.getElementById('uTitle').value) document.getElementById('uTitle').value=file.name.replace(/\.[^.]+$/,'');
+}
+
+function clearFile(){selFile=null;document.getElementById('filePrev').classList.remove('show');document.getElementById('upBtn').disabled=true;document.getElementById('fileIn').value='';}
+
+async function doUpload(){
+  if(!selFile){alert('Pehle file select karo!');return;}
+  const title=document.getElementById('uTitle').value.trim();
+  if(!title){alert('Title zaroor likho!');return;}
+  const btn=document.getElementById('upBtn');
+  btn.disabled=true; btn.textContent='Uploading...';
+  const progWrap=document.getElementById('uprogWrap');
+  progWrap.classList.add('show');
+  const fd=new FormData();
+  fd.append('file',selFile);
+  fd.append('upload_preset',CLD_PRESET);
+  fd.append('folder','notesverse');
+  try{
+    const xhr=new XMLHttpRequest();
+    xhr.upload.onprogress=e=>{
+      if(e.lengthComputable){
+        const pct=Math.round(e.loaded/e.total*100);
+        document.getElementById('uprogFill').style.width=pct+'%';
+        document.getElementById('uprogPct').textContent=pct+'%';
+      }
+    };
+    xhr.onload=async()=>{
+      if(xhr.status===200){
+        const res=JSON.parse(xhr.responseText);
+        const typeMap={'image':'img','video':'video','pdf':'pdf','raw':'doc'};
+        const cType=res.resource_type==='image'?'img':res.resource_type==='video'?'video':'pdf';
+        const data={
+          title, section:document.getElementById('uSection').value,
+          exam:document.getElementById('uExam').value, cat:document.getElementById('uCat').value,
+          type:cType, icon:getIcon(cType), fileUrl:res.secure_url,
+          fileName:selFile.name, createdAt:new Date().toISOString()
+        };
+        const r=await addDoc(collection(db,"notes"),data);
+        allNotes.push({id:r.id,...data});
+        progWrap.classList.remove('show');
+        btn.disabled=false; btn.textContent='📤 Upload Karo';
+        clearFile();
+        document.getElementById('uTitle').value='';
+        renderNotes('all'); renderEbooks('all');
+        document.getElementById('adContent').textContent=allNotes.length+allQuizzes.length+allCA.length;
+        alert('✅ Content upload ho gaya! Students ko dikh raha hai!');
+      } else {
+        throw new Error('Upload failed: '+xhr.responseText);
+      }
+    };
+    xhr.onerror=()=>{throw new Error('Network error');};
+    xhr.open('POST',CLD_URL);
+    xhr.send(fd);
+  }catch(err){
+    progWrap.classList.remove('show');
+    btn.disabled=false; btn.textContent='📤 Upload Karo';
+    alert('Upload failed: '+err.message);
+  }
+}
+
+// CURRENT AFFAIRS
+async function saveCA(){
+  const title=document.getElementById('caTitle').value.trim();
+  const desc=document.getElementById('caDesc').value.trim();
+  if(!title||!desc){alert('Title aur description zaroor likho!');return;}
+  const tags=document.getElementById('caTags').value.split(',').map(t=>t.trim()).filter(Boolean);
+  const data={title,desc,cat:document.getElementById('caCat').value,tags,date:new Date().toISOString().split('T')[0],createdAt:new Date().toISOString()};
+  const r=await addDoc(collection(db,"ca"),data);
+  allCA.unshift({id:r.id,...data});
+  document.getElementById('caTitle').value='';
+  document.getElementById('caDesc').value='';
+  document.getElementById('caTags').value='';
+  renderCA('all'); alert('✅ Current Affairs save ho gaya!');
+}
+
+// QUIZ BUILDER
+function addQField(){
+  qCount++;
+  const div=document.createElement('div');
+  div.className='q-entry2'; div.id='qe'+qCount;
+  div.innerHTML=`<div class="q-entry2-hdr"><div class="q-entry2-num">Sawaal ${qCount}</div><button class="del-btn2" onclick="document.getElementById('qe${qCount}').remove()">✕</button></div>
+  <div class="aform2">
+    <input type="text" id="qq${qCount}" placeholder="Sawaal likhein *">
+    <input type="text" id="qa${qCount}" placeholder="Option A *">
+    <input type="text" id="qb${qCount}" placeholder="Option B *">
+    <input type="text" id="qc${qCount}" placeholder="Option C *">
+    <input type="text" id="qd${qCount}" placeholder="Option D *">
+    <select id="qans${qCount}"><option value="0">✅ Sahi: A</option><option value="1">✅ Sahi: B</option><option value="2">✅ Sahi: C</option><option value="3">✅ Sahi: D</option></select>
+    <input type="text" id="qexp${qCount}" placeholder="Explanation (optional)">
+  </div>`;
+  document.getElementById('qBuilder').appendChild(div);
+}
+
+async function saveQuiz(){
+  const title=document.getElementById('qzTitle').value.trim();
+  if(!title){alert('Quiz ka title zaroor likho!');return;}
+  const entries=document.querySelectorAll('.q-entry2');
+  if(!entries.length){alert('Kam se kam ek sawaal add karo!');return;}
+  const questions=[];
+  for(const e of entries){
+    const n=e.id.replace('qe','');
+    const q=document.getElementById('qq'+n)?.value.trim();
+    const a=document.getElementById('qa'+n)?.value.trim();
+    const b=document.getElementById('qb'+n)?.value.trim();
+    const c=document.getElementById('qc'+n)?.value.trim();
+    const d=document.getElementById('qd'+n)?.value.trim();
+    if(!q||!a||!b||!c||!d){alert(`Sawaal ${n} ke sab fields bharein!`);return;}
+    questions.push({q,opts:[a,b,c,d],ans:parseInt(document.getElementById('qans'+n)?.value||0),exp:document.getElementById('qexp'+n)?.value||''});
+  }
+  const data={title,exam:document.getElementById('qzExam').value,cat:document.getElementById('qzCat').value,diff:document.getElementById('qzDiff').value,questions,createdAt:new Date().toISOString()};
+  const r=await addDoc(collection(db,"quizzes"),data);
+  allQuizzes.push({id:r.id,...data});
+  document.getElementById('qzTitle').value='';
+  document.getElementById('qBuilder').innerHTML=''; qCount=0; addQField();
+  renderQuizzes('all'); renderMock('all');
+  document.getElementById('adContent').textContent=allNotes.length+allQuizzes.length+allCA.length;
+  alert('✅ Quiz save ho gaya! Students ko dikh raha hai!');
+}
+
+// MANAGE
+function renderManage(){
+  const list=document.getElementById('manageList');
+  const all=[...allNotes.map(n=>({...n,kind:'content'})),...allQuizzes.map(q=>({...q,kind:'quiz'})),...allCA.map(c=>({...c,kind:'ca'}))];
+  if(!all.length){list.innerHTML='<div class="empty2"><div class="empty2-icon">📭</div><div class="empty2-text">Koi content nahi</div></div>';return;}
+  list.innerHTML=all.map(item=>`<div class="content-row">
+    <div class="cr-icon">${item.kind==='quiz'?'📝':item.kind==='ca'?'📰':getIcon(item.type||'text')}</div>
+    <div class="cr-info"><div class="cr-title">${item.title}</div><div class="cr-meta">${item.kind} · ${item.cat||''} · ${item.exam||''}</div></div>
+    <button class="del-btn2" onclick="deleteItem('${item.id}','${item.kind}')">🗑️</button>
+  </div>`).join('');
+}
+
+async function deleteItem(id,kind){
+  if(!confirm('Delete karna chahte ho?')) return;
+  if(kind==='content'){await deleteDoc(doc(db,"notes",id));allNotes=allNotes.filter(n=>n.id!==id);renderNotes('all');renderEbooks('all');}
+  else if(kind==='quiz'){await deleteDoc(doc(db,"quizzes",id));allQuizzes=allQuizzes.filter(q=>q.id!==id);renderQuizzes('all');}
+  else if(kind==='ca'){await deleteDoc(doc(db,"ca",id));allCA=allCA.filter(c=>c.id!==id);renderCA('all');}
+  renderManage();
+  document.getElementById('adContent').textContent=allNotes.length+allQuizzes.length+allCA.length;
+  alert('✅ Delete ho gaya!');
+}
+
+async function loadStudents(){
+  const list=document.getElementById('studentsList');
+  const snap=await getDocs(collection(db,"users"));
+  if(snap.empty){list.innerHTML='<div class="empty2"><div class="empty2-icon">👥</div><div class="empty2-text">Koi student nahi</div></div>';return;}
+  list.innerHTML=snap.docs.map(d=>{const u=d.data();return `<div class="student-row2">
+    <div class="sr-avatar">${(u.name||'S')[0].toUpperCase()}</div>
+    <div class="sr-info"><div class="sr-name">${u.name||'Student'}</div><div class="sr-email">${u.email} · ${u.exam||''}</div></div>
+    <div class="sr-score">🏆 ${u.bestScore||0}%</div>
+  </div>`;}).join('');
+}
+</script>
+</body>
+</html>
